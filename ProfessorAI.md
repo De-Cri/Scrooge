@@ -1,212 +1,141 @@
-You are a senior full-stack engineer and product designer.
+You are a senior frontend engineer and product designer.
 
-Generate a frontend prototype for a web application called:
+Create a fully working frontend-only prototype (HTML + CSS + Vanilla JavaScript, no frameworks) for a web app called:
 
-"OralAI – AI Oral Exam Coach"
+"OralAI – Your AI Exam Professor"
 
 The design must combine:
-- The bold dark hero aesthetic inspired by Redis.com
-- The minimal, clean, premium feel inspired by Apple.com
-- Modern AI SaaS design principles
-- Strong typography hierarchy
-- Large spacing
-- Clean, not cluttered
-- Professional startup quality
+- The bold, dark, high-contrast hero style inspired by Redis.com
+- The minimal, elegant, clean aesthetic inspired by Apple.com
+- Modern AI SaaS landing page design
+- Smooth typography and strong spacing hierarchy
+- Professional product feel
+
+The result must be:
+- Clean
+- Minimal
+- Premium
+- Not cluttered
+- Ready to be connected later to a backend
 
 Use:
 - Pure HTML
-- Pure CSS
-- Vanilla JavaScript
-- Google Font: Inter
-- No frameworks
-- Fully responsive
+- Pure CSS (no Tailwind, no Bootstrap)
+- Vanilla JS
+- Google Font: Inter or SF-like system font stack
+- Responsive design
 
-==================================================
-PROJECT STRUCTURE (MULTI-PAGE)
-==================================================
+--------------------------------------------------
+STRUCTURE
+--------------------------------------------------
 
-Generate this folder structure:
+Create a single-page layout with the following sections:
 
-root/
-  frontend/
-    index.html          (Landing page)
-    study.html          (Main study app)
-    css/
-      styles.css
-    js/
-      main.js
-      study.js
-    assets/
+1) NAVBAR (fixed top, glass/blur effect)
+- Logo text: "OralAI"
+- Links: How it Works | Features | Demo | Login
+- CTA button: "Start a Simulation"
+- Minimal Apple-style hover effects
 
-All pages must share styles.css.
-JavaScript must be separated logically.
+2) HERO SECTION (Redis-inspired bold typography)
+- Dark background (#0f172a or similar deep navy)
+- Large bold headline (very large typography):
+  "YOUR EXAM IS ABOUT TO GET EASIER"
+- Subheadline:
+  "Simulate real oral exams with AI feedback, scoring, and adaptive questions."
+- Two buttons:
+    - Primary: "Start Free Simulation"
+    - Secondary: "See How It Works"
+- Subtle gradient background glow
+- Smooth fade-in animation on load
 
-==================================================
-PAGE 1 — LANDING (index.html)
-==================================================
+3) HOW IT WORKS SECTION (Apple minimal grid)
+3 columns:
+- 1. Choose Subject
+- 2. Explain the Topic
+- 3. Get Feedback & Score
 
-Sections:
+Use minimal icon placeholders (simple circles or SVG shapes).
+Very clean spacing, white background, lots of whitespace.
 
-1) Navbar (fixed, glass blur)
-   - Logo: OralAI
-   - Links: How it Works | Features | Login
-   - CTA button: "Start Studying"
-   - CTA must link to study.html
+4) INTERACTIVE DEMO SECTION
+Create a fake demo simulation UI:
 
-2) Hero
-   Large bold headline:
-   "YOUR EXAM IS ABOUT TO GET EASIER"
-   Subheadline:
-   "Train for real oral exams with AI scoring and adaptive feedback."
-   Two buttons:
-      - Start Free Simulation (links to study.html)
-      - Learn More (scroll)
+Card-style container with:
+- Dropdown: Level (High School / University)
+- Input: Subject
+- Textarea: "Explain your topic here..."
+- Button: "Submit Simulation"
 
-   Dark background (#0f172a)
-   Subtle gradient glow
+When clicking submit:
+- Show a fake loading animation (2 seconds)
+- Then display a mock AI evaluation panel with:
+    - Score: 24/30
+    - Strengths (bullet list)
+    - Weaknesses (bullet list)
+    - Follow-up questions (numbered list)
 
-3) How It Works (3 columns)
-   - Choose Subject
-   - Explain the Topic
-   - Get AI Feedback
+This must be done using simple JavaScript DOM manipulation.
+No backend.
 
-4) Features
-   - Structured scoring
-   - Adaptive follow-up questions
-   - Progress tracking
-   - Multi-level evaluation
+5) PROGRESS SECTION (Minimal stats style)
+Simple horizontal cards:
+- Exams Taken: 12
+- Average Score: 25/30
+- Improvement: +18%
 
-5) Footer (minimal dark)
+Clean Apple-like cards with soft shadows.
 
-==================================================
-PAGE 2 — STUDY PAGE (study.html)
-==================================================
+6) FOOTER
+Minimal
+Dark background
+Small centered text:
+"© 2026 OralAI – AI-powered oral exam simulator"
 
-This is the real application interface.
+--------------------------------------------------
+DESIGN STYLE RULES
+--------------------------------------------------
 
-Layout:
+- Typography hierarchy must be strong.
+- Hero headline must be VERY large and bold.
+- Use generous spacing (min-height sections, padding: 100px+).
+- Use subtle animations (fade-in, hover scale).
+- Rounded corners (16px+).
+- Soft shadows.
+- Smooth transitions (0.3s ease).
+- No clutter.
+- No excessive colors.
 
-Left Sidebar:
-   - Logo
-   - Navigation:
-       Dashboard
-       New Simulation
-       History
-       Settings
-   - Minimal vertical layout
-   - Soft dark background
+Color palette:
+Primary dark: #0f172a
+Accent: soft red inspired by Redis (#dc2626 but softer)
+Secondary accent: light blue glow
+Background light sections: #f8fafc
 
-Main Content Area:
+Buttons:
+- Primary: filled red
+- Secondary: outline white (in hero)
+- Smooth hover scaling
 
-TOP SECTION — Simulation Setup
-   - Dropdown: Level (High School / University)
-   - Dropdown: Subject (Math, Physics, History, etc.)
-   - Input: Topic
-   - Button: "Start Simulation"
+--------------------------------------------------
+CODE REQUIREMENTS
+--------------------------------------------------
 
-EXPOSURE SECTION
-   - Large textarea
-   - Character counter
-   - Timer simulation (start when typing)
-   - Submit button
+- Everything must be in one HTML file.
+- Separate <style> and <script> sections.
+- Clean indentation.
+- Comment main sections clearly.
+- No external libraries except Google Fonts.
+- Fully responsive down to mobile.
+- No placeholders like lorem ipsum.
+- Make it look like a real SaaS landing page.
 
-When user clicks submit:
-   - Show animated loading state
-   - After 2 seconds display:
-
-EVALUATION PANEL
-   - Score card (big bold score 24/30)
-   - Breakdown:
-        Clarity: 8/10
-        Completeness: 7/10
-        Accuracy: 9/10
-   - Strengths list
-   - Weaknesses list
-   - Follow-up questions
-
-PROGRESS SECTION
-   - Simple stat cards:
-        Exams Taken
-        Average Score
-        Best Subject
-   - Minimal Apple-style cards
-
-Use Vanilla JS to:
-   - Handle navigation tab switching (Dashboard / Simulation / History)
-   - Simulate loading
-   - Dynamically insert evaluation results
-   - Update character counter
-
-==================================================
-DESIGN RULES
-==================================================
-
-- Primary background: #0f172a
-- Light sections: #f8fafc
-- Accent red inspired by Redis (#dc2626 softened)
-- Rounded corners (16px+)
-- Soft shadows
-- Smooth hover transitions
-- Clean animations
-- No clutter
-- Premium SaaS look
-
-Typography:
-- Very large bold hero text
-- Clear section separation
-- Generous padding (100px sections landing)
-- 24px+ spacing rhythm
-
-==================================================
-PART 3 — FUTURE BACKEND STRUCTURE
-==================================================
-
-After generating frontend code, also generate recommended backend structure:
-
-backend/
-  src/
-    server.js
-    routes/
-      exam.routes.js
-      user.routes.js
-    controllers/
-      exam.controller.js
-      user.controller.js
-    services/
-      ai/
-        evaluation.service.js
-        questionGenerator.service.js
-      scoring/
-        scoringEngine.js
-      progress/
-        progressTracker.js
-    models/
-      user.model.js
-      exam.model.js
-      attempt.model.js
-    middlewares/
-    utils/
-  config/
-  package.json
-
-Explain briefly:
-- Where AI calls will live
-- Where scoring engine lives
-- Where exam session logic lives
-- Where DB logic lives
-- How frontend will call backend (REST API)
-
-==================================================
+--------------------------------------------------
 GOAL
-==================================================
+--------------------------------------------------
 
-This must feel like:
-- A real SaaS product
-- Clean and modern
-- Production-ready structure
-- Not a school demo
+This is only a frontend prototype to visualize the product idea.
+It should look like a real startup landing page, not a school project.
+It must feel premium and modern.
 
-Generate:
-1) All frontend files
-2) Folder structure
-3) Short technical explanation
+Generate the complete working HTML file.
