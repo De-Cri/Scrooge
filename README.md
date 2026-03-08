@@ -1,3 +1,5 @@
+![RepoGraph presentation image](Gemini_Generated_Image_4hm7nf4hm7nf4hm7.png)
+
 # RepoGraph
 
 **Understand any codebase in seconds.**
@@ -150,16 +152,29 @@ functions → graph
 ## Project Structure
 
 ```
-repograph
+repograph/
 │
-├─ scanner.py
-├─ parser.py
-├─ graph_builder.py
-├─ cli.py
+├── parser/
+│   ├── ast_parser.py        # estrazione di classi, metodi, funzioni
+│   └── symbol_index.py      # mapping simbolo → file/linea
 │
-└─ example_repo
-   └─ auth.py
-```
+├── graph/
+│   ├── call_graph.py        # grafo delle chiamate
+│   ├── dependency_graph.py  # dipendenze tra moduli
+│   └── execution_paths.py   # path probabili
+│
+├── retrieval/
+│   ├── semantic_search.py   # embeddings simboli
+│   └── graph_expansion.py   # espansione intelligente
+│
+├── context/
+│   └── context_builder.py   # ranking e trimming per token
+│
+├── server/
+│   └── api.py               # MCP / REST API
+│
+└── cli/
+    └── repograph_cli.py
 
 ---
 
