@@ -1,0 +1,343 @@
+{
+  "parsed_repo": {
+    "files": {
+      "auth.py": {
+        "classes": {},
+        "functions": {
+          "login_user": {
+            "calls": [
+              "utils.normalize_username",
+              "models.AuthService",
+              "service.issue_token",
+              "auth.audit_login"
+            ]
+          },
+          "audit_login": {
+            "calls": [
+              "auth.store_audit_entry"
+            ]
+          },
+          "store_audit_entry": {
+            "calls": []
+          }
+        }
+      },
+      "auth_service.py": {
+        "classes": {
+          "AuthService": {
+            "methods": {
+              "authenticate": {
+                "calls": [
+                  "auth_service.AuthService.get_user"
+                ]
+              },
+              "get_user": {
+                "calls": []
+              }
+            }
+          }
+        },
+        "functions": {
+          "helper_function": {
+            "calls": []
+          }
+        }
+      },
+      "models.py": {
+        "classes": {
+          "AuthService": {
+            "methods": {
+              "issue_token": {
+                "calls": [
+                  "models.build_token_payload",
+                  "utils.hash_token"
+                ]
+              },
+              "check_token": {
+                "calls": [
+                  "models.token_is_not_empty"
+                ]
+              }
+            }
+          },
+          "ProfileService": {
+            "methods": {
+              "load_profile": {
+                "calls": [
+                  "models.fetch_profile_data",
+                  "models.format_profile"
+                ]
+              },
+              "save_profile": {
+                "calls": [
+                  "models.fetch_profile_data",
+                  "models.persist_profile"
+                ]
+              }
+            }
+          }
+        },
+        "functions": {
+          "build_token_payload": {
+            "calls": []
+          },
+          "token_is_not_empty": {
+            "calls": [
+              "bool"
+            ]
+          },
+          "fetch_profile_data": {
+            "calls": []
+          },
+          "format_profile": {
+            "calls": []
+          },
+          "persist_profile": {
+            "calls": []
+          }
+        }
+      },
+      "utils.py": {
+        "classes": {},
+        "functions": {
+          "normalize_username": {
+            "calls": [
+              "utils.remove_spaces",
+              "value.strip"
+            ]
+          },
+          "remove_spaces": {
+            "calls": [
+              "value.replace"
+            ]
+          },
+          "hash_token": {
+            "calls": [
+              "utils.shorten_hash",
+              "hashlib.sha256",
+              "value.encode"
+            ]
+          },
+          "shorten_hash": {
+            "calls": []
+          }
+        }
+      },
+      "workflow.py": {
+        "classes": {},
+        "functions": {
+          "run_user_onboarding": {
+            "calls": [
+              "auth.login_user",
+              "models.ProfileService",
+              "profile_service.save_profile",
+              "notifications.emailer.send_welcome_email"
+            ]
+          }
+        }
+      },
+      "emailer.py": {
+        "classes": {
+          "Mailer": {
+            "methods": {
+              "deliver_message": {
+                "calls": [
+                  "utils.normalize_username",
+                  "emailer.compose_body",
+                  "emailer.smtp_send"
+                ]
+              }
+            }
+          }
+        },
+        "functions": {
+          "send_welcome_email": {
+            "calls": [
+              "Mailer",
+              "mailer.deliver_message"
+            ]
+          },
+          "compose_body": {
+            "calls": []
+          },
+          "smtp_send": {
+            "calls": []
+          }
+        }
+      },
+      "__init__.py": {
+        "classes": {},
+        "functions": {
+          "notify_signup": {
+            "calls": [
+              "notifications.emailer.send_welcome_email"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "graph": {
+    "nodes": [
+      "auth.login_user",
+      "utils.normalize_username",
+      "models.AuthService",
+      "service.issue_token",
+      "auth.audit_login",
+      "auth.store_audit_entry",
+      "auth_service.helper_function",
+      "auth_service.AuthService.authenticate",
+      "auth_service.AuthService.get_user",
+      "models.build_token_payload",
+      "models.token_is_not_empty",
+      "bool",
+      "models.fetch_profile_data",
+      "models.format_profile",
+      "models.persist_profile",
+      "models.AuthService.issue_token",
+      "utils.hash_token",
+      "models.AuthService.check_token",
+      "models.ProfileService.load_profile",
+      "models.ProfileService.save_profile",
+      "utils.remove_spaces",
+      "value.strip",
+      "value.replace",
+      "utils.shorten_hash",
+      "hashlib.sha256",
+      "value.encode",
+      "workflow.run_user_onboarding",
+      "models.ProfileService",
+      "profile_service.save_profile",
+      "notifications.emailer.send_welcome_email",
+      "emailer.send_welcome_email",
+      "Mailer",
+      "mailer.deliver_message",
+      "emailer.compose_body",
+      "emailer.smtp_send",
+      "emailer.Mailer.deliver_message",
+      "__init__.notify_signup"
+    ],
+    "edges": [
+      {
+        "source": "auth.login_user",
+        "target": "utils.normalize_username"
+      },
+      {
+        "source": "auth.login_user",
+        "target": "models.AuthService"
+      },
+      {
+        "source": "auth.login_user",
+        "target": "service.issue_token"
+      },
+      {
+        "source": "auth.login_user",
+        "target": "auth.audit_login"
+      },
+      {
+        "source": "utils.normalize_username",
+        "target": "utils.remove_spaces"
+      },
+      {
+        "source": "utils.normalize_username",
+        "target": "value.strip"
+      },
+      {
+        "source": "auth.audit_login",
+        "target": "auth.store_audit_entry"
+      },
+      {
+        "source": "auth_service.AuthService.authenticate",
+        "target": "auth_service.AuthService.get_user"
+      },
+      {
+        "source": "models.token_is_not_empty",
+        "target": "bool"
+      },
+      {
+        "source": "models.AuthService.issue_token",
+        "target": "models.build_token_payload"
+      },
+      {
+        "source": "models.AuthService.issue_token",
+        "target": "utils.hash_token"
+      },
+      {
+        "source": "utils.hash_token",
+        "target": "utils.shorten_hash"
+      },
+      {
+        "source": "utils.hash_token",
+        "target": "hashlib.sha256"
+      },
+      {
+        "source": "utils.hash_token",
+        "target": "value.encode"
+      },
+      {
+        "source": "models.AuthService.check_token",
+        "target": "models.token_is_not_empty"
+      },
+      {
+        "source": "models.ProfileService.load_profile",
+        "target": "models.fetch_profile_data"
+      },
+      {
+        "source": "models.ProfileService.load_profile",
+        "target": "models.format_profile"
+      },
+      {
+        "source": "models.ProfileService.save_profile",
+        "target": "models.fetch_profile_data"
+      },
+      {
+        "source": "models.ProfileService.save_profile",
+        "target": "models.persist_profile"
+      },
+      {
+        "source": "utils.remove_spaces",
+        "target": "value.replace"
+      },
+      {
+        "source": "workflow.run_user_onboarding",
+        "target": "auth.login_user"
+      },
+      {
+        "source": "workflow.run_user_onboarding",
+        "target": "models.ProfileService"
+      },
+      {
+        "source": "workflow.run_user_onboarding",
+        "target": "profile_service.save_profile"
+      },
+      {
+        "source": "workflow.run_user_onboarding",
+        "target": "notifications.emailer.send_welcome_email"
+      },
+      {
+        "source": "emailer.send_welcome_email",
+        "target": "Mailer"
+      },
+      {
+        "source": "emailer.send_welcome_email",
+        "target": "mailer.deliver_message"
+      },
+      {
+        "source": "emailer.Mailer.deliver_message",
+        "target": "utils.normalize_username"
+      },
+      {
+        "source": "emailer.Mailer.deliver_message",
+        "target": "emailer.compose_body"
+      },
+      {
+        "source": "emailer.Mailer.deliver_message",
+        "target": "emailer.smtp_send"
+      },
+      {
+        "source": "__init__.notify_signup",
+        "target": "notifications.emailer.send_welcome_email"
+      }
+    ]
+  }
+}

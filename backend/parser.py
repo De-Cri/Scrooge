@@ -2,7 +2,7 @@ import ast
 from pathlib import Path
 
 
-def _build_import_map(tree):
+def _build_import_map(tree, current_module):
     import_map = {}
     for node in tree.body:
         if isinstance(node, ast.Import):
@@ -10,10 +10,22 @@ def _build_import_map(tree):
                 key = alias.asname or alias.name
                 import_map[key] = alias.name
         elif isinstance(node, ast.ImportFrom):
-            module = node.module or ""
+            #base module
+            module = node.module
+            
+            #managing relative imports
+            if node.level > 0:
+                parts = current_module.split(".")
+                base = parts[:-node.level]
+                if module:
+                    module = ".".join(base + [module])
+                else:
+                    module = ".".join(base)
+
             for alias in node.names:
                 key = alias.asname or alias.name
                 import_map[key] = f"{module}.{alias.name}" if module else alias.name
+
     return import_map
 
 
@@ -116,10 +128,22 @@ def parse_file(file_path):
         source = f.read()
 
     tree = ast.parse(source)
-    module_name = Path(file_path).stem
-    file_name = Path(file_path).name
+    path_obj = Path(file_path)
+    module_name = path_obj.stem
+    file_name = path_obj.name
 
-    import_map = _build_import_map(tree)
+    # Build a Python-like module path (e.g. package.subpackage.module)
+    try:
+        rel_path = path_obj.resolve().relative_to(Path.cwd().resolve())
+    except ValueError:
+        rel_path = path_obj
+
+    module_parts = list(rel_path.with_suffix("").parts)
+    if module_parts and module_parts[-1] == "__init__":
+        module_parts = module_parts[:-1]
+    current_module = ".".join(module_parts) if module_parts else module_name
+
+    import_map = _build_import_map(tree, current_module)
     local_functions, class_map = _get_local_symbols(tree)
 
     parsed_file = {"classes": {}, "functions": {}}
