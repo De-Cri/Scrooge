@@ -59,6 +59,11 @@ def connections(
     query: str = typer.Argument(""),
     depth: int = typer.Argument(2),
     compact: bool = typer.Option(False, "--compact", help="Output compatto per ridurre i token."),
+    rank_keep_pct: float = typer.Option(
+        1.0,
+        "--rank-keep-pct",
+        help="Percentuale (0-1) dei nodi rankati da mantenere.",
+    ),
 ):
     parsed_repo = _build_parsed_repo(path)
     graph = build_graph(parsed_repo)
@@ -66,7 +71,13 @@ def connections(
     symbol_map = symbol_extractor(query, parsed_payload)
     matched_nodes = sorted(set(_symbol_map_to_nodes(symbol_map)))
     symbol_list = [{"name": node, "type": "function"} for node in matched_nodes]
-    connections_list = generate_complete_connections(symbol_list, graph, depth=depth)
+    connections_list, ranked_nodes = generate_complete_connections(
+        symbol_list,
+        graph,
+        depth=depth,
+        rank_keep_pct=rank_keep_pct,
+        return_ranked=True,
+    )
     unique_connections = set()
     ordered_connections = []
     for item in connections_list:
@@ -79,6 +90,7 @@ def connections(
     if compact:
         payload = {
             "n": matched_nodes,
+            "rn": ranked_nodes,
             "e": [
                 [item.get("from"), item.get("to"), item.get("depth", 0)]
                 for item in ordered_connections
@@ -87,6 +99,7 @@ def connections(
     else:
         payload = {
             "matched_nodes": matched_nodes,
+            "ranked_nodes": ranked_nodes,
             "connections": ordered_connections,
         }
     typer.echo(json.dumps(payload, indent=2, ensure_ascii=False))

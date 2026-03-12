@@ -1,0 +1,14 @@
+{
+    "repos":  [
+                  {
+                      "name":  "brian",
+                      "path":  "C:/Users/ssamu/OneDrive/Desktop/github-biran2/brian2",
+                      "queries":  [
+                                      {
+                                          "query":  "explain function run",
+                                          "depth":  2
+                                      }
+                                  ]
+                  }
+              ]
+}

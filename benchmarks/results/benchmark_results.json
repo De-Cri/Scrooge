@@ -1,0 +1,224 @@
+{
+  "agent_comparison": {
+    "assumptions": {
+      "read_wpm": 200,
+      "words_per_loc": 10,
+      "chars_per_token": 4
+    },
+    "repos": [
+      {
+        "name": "brian",
+        "repo": "C:\\Users\\ssamu\\OneDrive\\Desktop\\github-biran2\\brian2",
+        "results": [
+          {
+            "query": "explain login",
+            "depth": 2,
+            "baseline": {
+              "total_loc": 88640,
+              "tokens_estimate": 5081,
+              "estimated_read_min": 34.15,
+              "files_used": 8
+            },
+            "repograph": {
+              "selected_loc": 2651,
+              "tokens_estimate": 23377,
+              "estimated_read_min": 132.55,
+              "architecture_time_s": 1.3631,
+              "connections_time_s": 1.3847,
+              "matched_nodes": 83,
+              "edges": 3353,
+              "files_used": 6
+            },
+            "savings": {
+              "loc_reduction": 0.9701,
+              "token_reduction": -3.6009,
+              "read_time_reduction": -2.8814
+            }
+          },
+          {
+            "query": "explain clock",
+            "depth": 2,
+            "baseline": {
+              "total_loc": 88640,
+              "tokens_estimate": 120798,
+              "estimated_read_min": 675.25,
+              "files_used": 8
+            },
+            "repograph": {
+              "selected_loc": 12549,
+              "tokens_estimate": 105299,
+              "estimated_read_min": 627.45,
+              "architecture_time_s": 1.3558,
+              "connections_time_s": 1.4064,
+              "matched_nodes": 63,
+              "edges": 3083,
+              "files_used": 9
+            },
+            "savings": {
+              "loc_reduction": 0.8584,
+              "token_reduction": 0.1283,
+              "read_time_reduction": 0.0708
+            }
+          },
+          {
+            "query": "explain function run",
+            "depth": 2,
+            "baseline": {
+              "total_loc": 88640,
+              "tokens_estimate": 98683,
+              "estimated_read_min": 585.75,
+              "files_used": 8
+            },
+            "repograph": {
+              "selected_loc": 37934,
+              "tokens_estimate": 319514,
+              "estimated_read_min": 1896.7,
+              "architecture_time_s": 1.3501,
+              "connections_time_s": 1.4657,
+              "matched_nodes": 209,
+              "edges": 6902,
+              "files_used": 62
+            },
+            "savings": {
+              "loc_reduction": 0.572,
+              "token_reduction": -2.2378,
+              "read_time_reduction": -2.2381
+            }
+          }
+        ]
+      }
+    ],
+    "skipped": []
+  },
+  "diagnostics": {
+    "example_repo_correctness": {
+      "node_precision": 1.0,
+      "node_recall": 1.0,
+      "edge_precision": 1.0,
+      "edge_recall": 1.0,
+      "nodes_expected": 37,
+      "nodes_actual": 37,
+      "edges_expected": 30,
+      "edges_actual": 30
+    },
+    "query_utility": [
+      {
+        "query": "login",
+        "expected_count": 2,
+        "returned_count": 2,
+        "hit_count": 2,
+        "recall": 1.0
+      },
+      {
+        "query": "profile",
+        "expected_count": 2,
+        "returned_count": 5,
+        "hit_count": 2,
+        "recall": 1.0
+      },
+      {
+        "query": "email",
+        "expected_count": 2,
+        "returned_count": 4,
+        "hit_count": 2,
+        "recall": 1.0
+      }
+    ],
+    "context_reduction": [
+      {
+        "query": "login",
+        "total_loc": 122,
+        "selected_loc": 17,
+        "selected_ratio": 0.1393,
+        "reduction": 0.8607
+      },
+      {
+        "query": "profile",
+        "total_loc": 122,
+        "selected_loc": 40,
+        "selected_ratio": 0.3279,
+        "reduction": 0.6721
+      },
+      {
+        "query": "email",
+        "total_loc": 122,
+        "selected_loc": 0,
+        "selected_ratio": 0.0,
+        "reduction": 1.0
+      }
+    ],
+    "end_to_end": {
+      "assumptions": {
+        "read_wpm": 200,
+        "words_per_loc": 10
+      },
+      "results": [
+        {
+          "task": "trace_login_flow",
+          "query": "login",
+          "expected_count": 3,
+          "hit_count": 2,
+          "recall": 0.6667,
+          "total_loc": 122,
+          "selected_loc": 17,
+          "selected_ratio": 0.1393,
+          "estimated_full_read_min": 6.1,
+          "estimated_selected_read_min": 0.85
+        },
+        {
+          "task": "profile_save_path",
+          "query": "profile",
+          "expected_count": 2,
+          "hit_count": 2,
+          "recall": 1.0,
+          "total_loc": 122,
+          "selected_loc": 40,
+          "selected_ratio": 0.3279,
+          "estimated_full_read_min": 6.1,
+          "estimated_selected_read_min": 2.0
+        },
+        {
+          "task": "welcome_email",
+          "query": "email",
+          "expected_count": 3,
+          "hit_count": 3,
+          "recall": 1.0,
+          "total_loc": 122,
+          "selected_loc": 0,
+          "selected_ratio": 0.0,
+          "estimated_full_read_min": 6.1,
+          "estimated_selected_read_min": 0.0
+        }
+      ]
+    },
+    "performance_scaling": [
+      {
+        "repo": "synth_f5_fn20_fo2",
+        "files": 5,
+        "funcs_per_file": 20,
+        "fanout": 2,
+        "nodes": 100,
+        "edges": 205,
+        "time_s": 0.0108
+      },
+      {
+        "repo": "synth_f10_fn30_fo2",
+        "files": 10,
+        "funcs_per_file": 30,
+        "fanout": 2,
+        "nodes": 300,
+        "edges": 610,
+        "time_s": 0.021
+      },
+      {
+        "repo": "synth_f20_fn40_fo3",
+        "files": 20,
+        "funcs_per_file": 40,
+        "fanout": 3,
+        "nodes": 800,
+        "edges": 2420,
+        "time_s": 0.0482
+      }
+    ]
+  }
+}

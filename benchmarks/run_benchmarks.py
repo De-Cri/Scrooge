@@ -1,7 +1,6 @@
 import json
 import sys
 import time
-import subprocess
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -12,6 +11,13 @@ from scanner.scanner import scan_repo
 from parser.ast_parser import parse_file
 from graph_builder.call_graph import build_graph
 from indexer.symbol_extractor import symbol_extractor
+from benchmarks.bench_utils import (
+    baseline_retrieval,
+    build_basename_index,
+    files_from_connections,
+    resolve_selected_files,
+    run_cli_json,
+)
 
 READ_WPM = 200
 WORDS_PER_LOC = 10
@@ -45,8 +51,15 @@ def _edge_set(graph):
 
 def _load_expected_example():
     expected_path = REPO_ROOT / "benchmarks" / "fixtures" / "expected_example_repo.json"
-    with expected_path.open("r", encoding="utf-8") as handle:
-        data = json.load(handle)
+    raw = expected_path.read_bytes()
+    for enc in ("utf-8", "utf-8-sig", "utf-16"):
+        try:
+            data = json.loads(raw.decode(enc))
+            break
+        except UnicodeDecodeError:
+            data = None
+    if data is None:
+        raise UnicodeError("Unable to decode expected_example_repo.json")
     expected_edges = {(e["source"], e["target"]) for e in data.get("edges", [])}
     return set(data.get("nodes", [])), expected_edges
 
@@ -259,16 +272,6 @@ def benchmark_end_to_end():
     }
 
 
-def _run_cli_json(args):
-    cmd = [sys.executable, str(REPO_ROOT / "cli" / "repograph_cli.py"), *args]
-    started = time.perf_counter()
-    proc = subprocess.run(cmd, capture_output=True, text=True)
-    elapsed = time.perf_counter() - started
-    if proc.returncode != 0:
-        raise RuntimeError(proc.stderr.strip() or "CLI error")
-    return json.loads(proc.stdout), elapsed
-
-
 def _load_real_repos():
     config_path = REPO_ROOT / "benchmarks" / "real_repos.json"
     if not config_path.exists():
@@ -282,22 +285,32 @@ def _load_real_repos():
 
 
 def _agent_comparison_for_repo(repo_path: Path, queries):
+    basename_index = build_basename_index(repo_path)
     all_files = [p for p in repo_path.rglob("*.py") if p.is_file()]
     total_loc = _count_loc(all_files)
-    baseline_text = _collect_text_from_files(all_files)
-    baseline_tokens = _estimate_tokens(baseline_text)
-    baseline_words = total_loc * WORDS_PER_LOC
-    baseline_read_min = baseline_words / READ_WPM if READ_WPM else 0.0
 
     results = []
     for item in queries:
         query = item["query"]
         depth = item.get("depth", 2)
 
-        arch, arch_time = _run_cli_json(["architecture", str(repo_path), query])
-        conn, conn_time = _run_cli_json(["connections", str(repo_path), query, str(depth), "--compact"])
+        start = time.perf_counter()
+        arch = run_cli_json(REPO_ROOT, ["architecture", str(repo_path), query])
+        arch_time = time.perf_counter() - start
 
-        selected_files = [repo_path / name for name in arch.keys()]
+        start = time.perf_counter()
+        conn = run_cli_json(REPO_ROOT, ["connections", str(repo_path), query, str(depth), "--compact"])
+        conn_time = time.perf_counter() - start
+
+        baseline_files = baseline_retrieval(query, all_files)
+        baseline_text = _collect_text_from_files(baseline_files)
+        baseline_tokens = _estimate_tokens(baseline_text)
+        baseline_words = _count_loc(baseline_files) * WORDS_PER_LOC
+        baseline_read_min = baseline_words / READ_WPM if READ_WPM else 0.0
+
+        arch_files = resolve_selected_files(repo_path, arch.keys(), basename_index)
+        conn_files = files_from_connections(conn, basename_index)
+        selected_files = list(set(arch_files + conn_files))
         selected_loc = _count_loc(selected_files)
         selected_text = _collect_text_from_files(selected_files)
         selected_tokens = _estimate_tokens(selected_text)
@@ -312,6 +325,7 @@ def _agent_comparison_for_repo(repo_path: Path, queries):
                     "total_loc": total_loc,
                     "tokens_estimate": baseline_tokens,
                     "estimated_read_min": round(baseline_read_min, 2),
+                    "files_used": len(baseline_files),
                 },
                 "repograph": {
                     "selected_loc": selected_loc,
@@ -321,6 +335,7 @@ def _agent_comparison_for_repo(repo_path: Path, queries):
                     "connections_time_s": round(conn_time, 4),
                     "matched_nodes": len(conn.get("n", [])),
                     "edges": len(conn.get("e", [])),
+                    "files_used": len(selected_files),
                 },
                 "savings": {
                     "loc_reduction": round(1 - (selected_loc / total_loc), 4) if total_loc else 0.0,
@@ -352,8 +367,18 @@ def benchmark_agent_comparison():
         ]
 
     output = []
+    skipped = []
     for repo in repos:
         repo_path = Path(repo["path"]).expanduser()
+        if not repo_path.exists():
+            skipped.append(
+                {
+                    "name": repo.get("name") or repo_path.name,
+                    "path": str(repo_path),
+                    "reason": "path_not_found",
+                }
+            )
+            continue
         queries = repo.get("queries") or [
             {"query": "login", "depth": 2},
             {"query": "profile", "depth": 2},
@@ -373,6 +398,7 @@ def benchmark_agent_comparison():
             "chars_per_token": CHARS_PER_TOKEN,
         },
         "repos": output,
+        "skipped": skipped,
     }
 
 

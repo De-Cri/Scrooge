@@ -1,0 +1,108 @@
+{
+  "results": [
+    {
+      "name": "brian",
+      "path": "C:\\Users\\ssamu\\OneDrive\\Desktop\\github-biran2\\brian2",
+      "model": "gemini-2.5-flash",
+      "max_input_tokens": 100000,
+      "queries": [
+        {
+          "query": "explain function run",
+          "depth": 2,
+          "agents": [
+            {
+              "agent": "classic",
+              "flow": "single",
+              "plan": {
+                "keywords": [
+                  "explain",
+                  "function",
+                  "run"
+                ],
+                "notes": "single-pass",
+                "raw": "",
+                "usage": {}
+              },
+              "reasoning": null,
+              "rounds": [
+                {
+                  "round": 1,
+                  "keywords": [
+                    "explain",
+                    "function",
+                    "run"
+                  ],
+                  "search_query": "explain function run",
+                  "files_selected": 8,
+                  "files_used": 6,
+                  "token_count_estimate": 84499,
+                  "repograph": null
+                }
+              ],
+              "final": {
+                "files_used": 6,
+                "token_count_estimate": 84499,
+                "response": {
+                  "text": "The `run` function in Brian2 initiates a simulation. Its behavior differs slightly depending on whether it's called as the global `run` function, a method of a `Network` object, or as part of a `Device`'s internal process for standalone compilation.\n\nHere's a breakdown:\n\n1.  **`brian2.run(duration, ...)` (Global function)**\n    *   This is the high-level user interface to start a simulation.\n    *   It implicitly uses `magic_network` to collect all Brian2 objects created in the global scope and runs them.\n    *   It takes a `duration` (e.g., `10 * ms`) for the simulation.\n    *   Optional arguments include `report` (e.g., `\"text\"`, `\"stdout\"`, `\"stderr\"`, or a custom callable for progress), `report_period`, `namespace`, `profile`, and `level`.\n    *   Example usage: `run(10 * ms)` (from `brian2/tests/test_network.py`).\n\n2.  **`Network.run(duration, ...)` (Method of `Network` object)**\n    *   This method performs the same core task as the global `run` but operates on a specific `Network` instance, which contains a predefined set of Brian2 objects.\n    *   It takes the same arguments as the global `run` function.\n    *   Example usage: `net.run(1 * ms)` (from `brian2/tests/test_network.py`).\n    *   Internally, `Network.run` delegates to the currently active `device`'s `network_run` method for device-specific execution.\n\n3.  **`CPPStandaloneDevice.network_run(net, duration, ...)` (Internal device method)**\n    *   This method (defined in `brian2/devices/cpp_standalone/device.py`) is the *device-specific implementation* that handles the logic of preparing a simulation for the C++ standalone target.\n    *   It does *not* immediately run the simulation. Instead, it:\n        *   Adds the `Network` object (`net`) to the device's list of networks.\n        *   Calls `net.before_run()` and `net.after_run()`.\n        *   Collects all `CodeObject`s, `Synapses`, and `Clock`s associated with the network.\n        *   Sets the simulation's end time (`t_end`) for all clocks.\n        *   Handles the `report` function by setting `self.report_func` if reporting is enabled.\n        *   Generates a sequence of internal commands (`run_network`) that will be added to the `self.main_queue` to be processed later during the `device.build()` step. This includes calls to generated C++ code for each `CodeObject`.\n        *   Updates the `array_cache` for clock variables (`t`, `timestep`) to reflect the new simulation time.\n        *   If `device.build_on_run` is `True` (the default for `cpp_standalone`), it triggers `device.build()` to generate, compile, and execute the C++ code.\n\n4.  **`CPPStandaloneDevice.run(directory=None, results_directory=None, with_output=True, run_args=None)` (Internal device method)**\n    *   This method (defined in `brian2/devices/cpp_standalone/device.py`) is responsible for *executing the compiled C++ standalone binary*.\n    *   It is typically called by `CPPStandaloneDevice.build(run=True)` or automatically if `build_on_run=True` in `CPPStandaloneDevice.network_run`.\n    *   It navigates to the `directory` where the C++ project was built.\n    *   Sets environment variables for execution.\n    *   Executes the compiled binary (e.g., `./main` on Unix, `main.exe` on Windows) using `subprocess.call`.\n    *   Passes `run_args` as command-line arguments to the executable (e.g., to override variable values).\n    *   Records the time taken for binary execution (`self.timers[\"run_binary\"]`).\n    *   Sets `self.has_been_run = True`.\n    *   Reads simulation info (like `_last_run_time`) from the `results_directory`.\n    *   Performs checks for invalid states (e.g., `NaN` values) in `Group` variables after the run.\n    *   Example of usage from tests: `device.build(directory=None, with_output=False)` followed by `device.run(...)` (from `brian2/tests/test_cpp_standalone.py`).\n\nIn summary, `brian2.run` and `Network.run` are the user-facing functions that *configure* and *prepare* a simulation, while for the C++ standalone device, the actual *computation* happens in the compiled binary, executed by the `CPPStandaloneDevice.run` method, typically triggered by `device.build()`.",
+                  "usage": {
+                    "prompt_token_count": 84532,
+                    "candidates_token_count": 1130,
+                    "total_token_count": 86868
+                  }
+                }
+              }
+            },
+            {
+              "agent": "repograph",
+              "flow": "single",
+              "plan": {
+                "keywords": [
+                  "explain",
+                  "function",
+                  "run"
+                ],
+                "notes": "single-pass",
+                "raw": "",
+                "usage": {}
+              },
+              "reasoning": null,
+              "rounds": [
+                {
+                  "round": 1,
+                  "keywords": [
+                    "explain",
+                    "function",
+                    "run"
+                  ],
+                  "search_query": "explain function run",
+                  "files_selected": 8,
+                  "files_used": 8,
+                  "token_count_estimate": 82467,
+                  "repograph": {
+                    "arch_matches": 55,
+                    "arch_files_selected": 8,
+                    "ranked_nodes": 26,
+                    "matched_nodes": 209,
+                    "edges": 43
+                  }
+                }
+              ],
+              "final": {
+                "files_used": 8,
+                "token_count_estimate": 82467,
+                "response": {
+                  "text": "The `run` function serves different purposes depending on the context:\n\n1.  **`Network.run(self, duration, ...)`**\n    *   **File:** `brian2/core/network.py`\n    *   **Purpose:** This is the main simulation control function in Brian. It executes the simulation for a specified `duration` by iterating through the network's objects, advancing their clocks, and calling their respective `run()` methods (see point 3).\n    *   **Details:** It handles progress reporting (`report`, `report_period`), namespace management, and profiling. It sorts objects according to the network schedule, prepares them via `before_run()`, and finalizes them with `after_run()`. The simulation stops if the duration is reached, `Network.stop()` is called, or a device-specific maximum run time is exceeded. After completion, it checks for invalid states (e.g., NaNs) in `Group` objects.\n\n2.  **`CPPStandaloneDevice.run(self, directory=None, results_directory=None, ...)`**\n    *   **File:** `brian2/devices/cpp_standalone/device.py`\n    *   **Purpose:** This function executes the compiled C++ standalone project. It is called by `Network.run` (indirectly via `device.build` if `build_on_run=True`) after the C++ code has been generated and compiled.\n    *   **Details:** It sets up the results directory, processes command-line arguments (including handling `VariableView` and `TimedArray` values by writing them as static arrays), configures environment variables, and then invokes the compiled binary (e.g., `./main` on Unix, `main.exe` on Windows) using `subprocess.call`. It also captures standard output if `with_output` is `False`. Upon successful execution, it sets the `has_been_run` flag to `True` and checks for invalid states in `Group` objects.\n\n3.  **`obj.run()` (implicitly called by `Network.run`)**\n    *   **File:** (Implicitly in `Network.run` in `brian2/core/network.py`)\n    *   **Purpose:** Within the `Network.run` loop, for each active object (`obj`), `obj.run()` is called. This `run` method on individual `BrianObject`s (or their subclasses, e.g., `NeuronGroup`, `Synapses`) is responsible for executing the code specific to that object for a single time step.\n    *   **Details:** While not explicitly defined as `BrianObject.run` in the provided context, the `Network.run` function expects such a method to exist on the objects it manages to advance their internal state.",
+                  "usage": {
+                    "prompt_token_count": 82500,
+                    "candidates_token_count": 603,
+                    "total_token_count": 83806
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
