@@ -26,7 +26,7 @@ Scrooge was benchmarked on [Brian2](https://github.com/brian-team/brian2), a lar
 
 ![Benchmark chart: Scrooge vs Classic agent](benchmarks/results/benchmark_chart.png)
 
-**Scrooge used 3.3× fewer tokens** and opened 3× fewer files — while producing an equally accurate, detailed answer.
+**Scrooge used 3.3× fewer tokens** and opened 3× fewer files — while producing an equally accurate, more detailed answer.
 
 ### How to reproduce
 
