@@ -2,11 +2,11 @@
 
 # Scrooge
 
-**Understand any codebase in seconds. Save millions of tokens.**
+**Save millions of tokens. Understand any codebase in seconds. **
 
 Scrooge scans a repository and builds a **function-level dependency graph** so AI agents and developers can instantly find the exact files and functions that matter — without reading the whole codebase.
 
-Designed for **large codebases** and AI coding tools like Claude Code. Available as a **CLI tool** and **MCP server**.
+Designed for AI coding tools like Claude Code. Available as a **CLI tool** and **MCP server**.
 
 ---
 
