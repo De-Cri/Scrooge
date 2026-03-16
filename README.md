@@ -1,4 +1,4 @@
-![Scrooge presentation image](image.png)
+![Scrooge presentation image](scrooge.jpg)
 
 # Scrooge
 
