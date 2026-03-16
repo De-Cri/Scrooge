@@ -39,7 +39,7 @@ GRID_COLOR       = "#2a2d3a"
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 5.5))
 fig.patch.set_facecolor(BG_COLOR)
 
-labels   = ["Classic\nagent", "RepoGraph\nagent"]
+labels   = ["Classic\nagent", "Scrooge\nagent"]
 x        = np.array([0, 1])
 bar_w    = 0.45
 
@@ -101,13 +101,13 @@ ax2.text(0.5, 0.88, f"{ratio_tokens:.1f}× fewer tokens",
 
 legend_handles = [
     mpatches.Patch(color=CLASSIC_COLOR,   label="Classic keyword agent"),
-    mpatches.Patch(color=REPOGRAPH_COLOR, label="RepoGraph agent"),
+    mpatches.Patch(color=REPOGRAPH_COLOR, label="Scrooge agent"),
 ]
 fig.legend(handles=legend_handles, loc="lower center", ncol=2,
            frameon=False, labelcolor=TEXT_COLOR, fontsize=10,
            bbox_to_anchor=(0.5, -0.02))
 
-fig.suptitle("RepoGraph vs Classic Agent — brian2 benchmark\n"
+fig.suptitle("Scrooge vs Classic Agent — brian2 benchmark\n"
              "Query: \"explain function run in brian2 simulator\"",
              color=TEXT_COLOR, fontsize=13, fontweight="bold", y=1.02)
 

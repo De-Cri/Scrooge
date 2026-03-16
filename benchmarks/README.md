@@ -1,8 +1,8 @@
-# Benchmarks for RepoGraph
+# Benchmarks for Scrooge
 
-This folder contains an automated benchmark suite that evaluates RepoGraph on:
+This folder contains an automated benchmark suite that evaluates Scrooge on:
 
-- Agent comparison (baseline repo scan vs RepoGraph CLI for time + token estimate)
+- Agent comparison (baseline repo scan vs Scrooge CLI for time + token estimate)
 - Correctness (nodes + edges vs expected graph on `example_repo`)
 - Query utility (symbol matches for real queries)
 - Context reduction (how much code is filtered out by queries)
@@ -40,7 +40,7 @@ SVG charts are saved to:
 
 ## What The Benchmarks Mean
 
-- `agent_comparison`: baseline vs RepoGraph CLI for token estimates, read-time estimates, and CLI runtime.
+- `agent_comparison`: baseline vs Scrooge CLI for token estimates, read-time estimates, and CLI runtime.
 
 ## Notes
 
@@ -71,7 +71,7 @@ Agent flow options:
 - `agent`: realistic loop  
   `query -> planning -> search -> open files -> reasoning -> search -> open files -> answer`
   For `classic`, you can optionally enable a file-picker step where the model chooses files from the repo file list.
-  For `repograph`, the agent flow runs RepoGraph first, then the model selects from the RepoGraph file list before answering.
+  For `repograph`, the agent flow runs Scrooge first, then the model selects from the Scrooge file list before answering.
 
 Set your API key:
 

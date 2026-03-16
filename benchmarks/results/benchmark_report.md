@@ -1,6 +1,6 @@
-# RepoGraph Benchmark Report
+# Scrooge Benchmark Report
 
-Source: `C:\Users\ssamu\OneDrive\Desktop\RepoGraphAI\benchmarks\results\benchmark_results.json`
+Source: `C:\Users\ssamu\OneDrive\Desktop\ScroogeAI\benchmarks\results\benchmark_results.json`
 
 **Agent Comparison (brian)**
 | query | baseline_tokens | repograph_tokens | token_reduction | read_time_reduction | arch_time_s | conn_time_s |
@@ -9,14 +9,14 @@ Source: `C:\Users\ssamu\OneDrive\Desktop\RepoGraphAI\benchmarks\results\benchmar
 | explain clock | 120798 | 105299 | 0.1283 | 0.0708 | 1.3558 | 1.4064 |
 | explain function run | 98683 | 319514 | -2.2378 | -2.2381 | 1.3501 | 1.4657 |
 
-![Agent Token Reduction brian](C:/Users/ssamu/OneDrive/Desktop/RepoGraphAI/benchmarks/results/agent_token_reduction_brian.svg)
+![Agent Token Reduction brian](C:/Users/ssamu/OneDrive/Desktop/ScroogeAI/benchmarks/results/agent_token_reduction_brian.svg)
 
-![Agent Read Time Reduction brian](C:/Users/ssamu/OneDrive/Desktop/RepoGraphAI/benchmarks/results/agent_read_time_reduction_brian.svg)
+![Agent Read Time Reduction brian](C:/Users/ssamu/OneDrive/Desktop/ScroogeAI/benchmarks/results/agent_read_time_reduction_brian.svg)
 
-![Agent CLI Time brian](C:/Users/ssamu/OneDrive/Desktop/RepoGraphAI/benchmarks/results/agent_cli_time_brian.svg)
+![Agent CLI Time brian](C:/Users/ssamu/OneDrive/Desktop/ScroogeAI/benchmarks/results/agent_cli_time_brian.svg)
 
 **Gemini Agent Comparison (Real Model)**
-Source: `C:\Users\ssamu\OneDrive\Desktop\RepoGraphAI\benchmarks\results\gemini_agent_results.json`
+Source: `C:\Users\ssamu\OneDrive\Desktop\ScroogeAI\benchmarks\results\gemini_agent_results.json`
 
 **Gemini (brian)**
 | query | baseline_prompt_tokens | repograph_prompt_tokens | baseline_files | repograph_files |
@@ -25,6 +25,6 @@ Source: `C:\Users\ssamu\OneDrive\Desktop\RepoGraphAI\benchmarks\results\gemini_a
 | explain clock | 82512 | 55449 | 5 | 6 |
 | explain function run | 84532 | 94655 | 6 | 21 |
 
-![Gemini Baseline Tokens brian](C:/Users/ssamu/OneDrive/Desktop/RepoGraphAI/benchmarks/results/gemini_baseline_tokens_brian.svg)
+![Gemini Baseline Tokens brian](C:/Users/ssamu/OneDrive/Desktop/ScroogeAI/benchmarks/results/gemini_baseline_tokens_brian.svg)
 
-![Gemini RepoGraph Tokens brian](C:/Users/ssamu/OneDrive/Desktop/RepoGraphAI/benchmarks/results/gemini_repograph_tokens_brian.svg)
+![Gemini Scrooge Tokens brian](C:/Users/ssamu/OneDrive/Desktop/ScroogeAI/benchmarks/results/gemini_repograph_tokens_brian.svg)

@@ -1,10 +1,10 @@
-![RepoGraph presentation image](image.png)
+![Scrooge presentation image](image.png)
 
-# RepoGraph
+# Scrooge
 
 **Understand any codebase in seconds. Save millions of tokens.**
 
-RepoGraph scans a repository and builds a **function-level dependency graph** so AI agents and developers can instantly find the exact files and functions that matter — without reading the whole codebase.
+Scrooge scans a repository and builds a **function-level dependency graph** so AI agents and developers can instantly find the exact files and functions that matter — without reading the whole codebase.
 
 Designed for **large codebases** and AI coding tools like Claude Code. Available as a **CLI tool** and **MCP server**.
 
@@ -20,13 +20,13 @@ Most of that context is noise.
 
 ## The Result
 
-RepoGraph was benchmarked on [Brian2](https://github.com/brian-team/brian2), a large real-world neural simulator, against a classic keyword-based agent using Gemini 2.5 Flash.
+Scrooge was benchmarked on [Brian2](https://github.com/brian-team/brian2), a large real-world neural simulator, against a classic keyword-based agent using Gemini 2.5 Flash.
 
 **Query**: *"explain function run in brian2 simulator"*
 
-![Benchmark chart: RepoGraph vs Classic agent](benchmarks/results/benchmark_chart.png)
+![Benchmark chart: Scrooge vs Classic agent](benchmarks/results/benchmark_chart.png)
 
-**RepoGraph used 3.3× fewer tokens** and opened 3× fewer files — while producing an equally accurate, detailed answer.
+**Scrooge used 3.3× fewer tokens** and opened 3× fewer files — while producing an equally accurate, detailed answer.
 
 ### How to reproduce
 
@@ -35,7 +35,7 @@ Classic agent:
 python benchmarks/gemini_agent_benchmark.py --agents classic --agent-flow agent
 ```
 
-RepoGraph agent:
+Scrooge agent:
 ```bash
 python benchmarks/gemini_agent_benchmark.py --agents repograph --agent-flow agent --rank-keep-pct 0.4 --arch-filter connections
 ```
@@ -44,13 +44,13 @@ python benchmarks/gemini_agent_benchmark.py --agents repograph --agent-flow agen
 
 ## Why it works
 
-Instead of keyword-matching filenames, RepoGraph builds a **structural graph of the repository**:
+Instead of keyword-matching filenames, Scrooge builds a **structural graph of the repository**:
 
 * which functions call which
 * how modules depend on each other
 * which symbols are most central to a query
 
-Given a query, RepoGraph ranks nodes by relevance and returns only the **key entry points** — the 2–3 files that actually contain the answer. The AI reads those, not everything.
+Given a query, Scrooge ranks nodes by relevance and returns only the **key entry points** — the 2–3 files that actually contain the answer. The AI reads those, not everything.
 
 At scale, across hundreds of agent runs, this saves **millions of tokens**.
 
@@ -69,14 +69,14 @@ def get_user(user):
     pass
 ```
 
-RepoGraph builds:
+Scrooge builds:
 
 ```
 login → authenticate → get_user
 ```
 
 Query: *"what does login touch?"*
-RepoGraph returns: `auth.py` with `login`, `authenticate`, `get_user` — not every file in the repo.
+Scrooge returns: `auth.py` with `login`, `authenticate`, `get_user` — not every file in the repo.
 
 ---
 
@@ -174,7 +174,7 @@ python cli/repograph_cli.py connections path/to/repo login 2 --compact
 
 ## MCP Server
 
-RepoGraph exposes its graph as an **MCP tool**, so AI agents can query it natively.
+Scrooge exposes its graph as an **MCP tool**, so AI agents can query it natively.
 
 Add it to your Claude Code config and agents will automatically call `repograph.connections` or `repograph.architecture` instead of reading entire files.
 
@@ -241,7 +241,7 @@ repograph/
 
 ## Vision
 
-RepoGraph is the **structural memory layer for AI coding agents**.
+Scrooge is the **structural memory layer for AI coding agents**.
 
 Instead of reading entire repositories, agents:
 
