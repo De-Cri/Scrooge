@@ -31,7 +31,7 @@ async def list_tools():
         ),
         types.Tool(
             name="architecture",
-            description="given a file-path and a query, scans the entire folder, parses the folder's structure, returns only the relevant parts of the parsed repo",
+            description="given a file-path and a query, scans the entire folder, parses the folder's structure, returns the relevant symbols and the most important files filtered by connection rank",
             inputSchema={
                 "type":"object",
                 "properties": {
@@ -42,6 +42,10 @@ async def list_tools():
                     "query":{
                         "type":"string",
                         "description":"represents the query given from the user"
+                    },
+                    "rank_keep_pct":{
+                        "type":"number",
+                        "description":"fraction (0-1) of top-ranked connection nodes to keep when filtering important files (default 0.3)"
                     }
                 },
                 "required":["path","query"]
@@ -114,14 +118,48 @@ async def call_tool(name: str, arguments: dict):
     if name == "architecture":
         files = scan_repo(arguments.get("path"))
         parsed_repo = {"files": {}}
+        name_to_path = {}
 
         for file in files:
             if file.suffix == ".py":
                 parsed_file = parse_file(file)
                 parsed_repo["files"].update(parsed_file.get("files", {}))
+                name_to_path.setdefault(file.name, []).append(str(file))
+
+        graph = build_graph(parsed_repo)
         parsed_payload = json.dumps({"parsed_repo": parsed_repo})
-        
-        json_output = symbol_extractor(arguments.get("query"), parsed_payload)
+        symbol_map = symbol_extractor(arguments.get("query"), parsed_payload)
+
+        arch_files = list(symbol_map.keys())
+
+        matched_nodes = sorted(set(_symbol_map_to_nodes(symbol_map)))
+        symbol_list = [{"name": node, "type": "function"} for node in matched_nodes]
+        rank_keep_pct = arguments.get("rank_keep_pct", 0.4)
+
+        _, ranked_nodes = generate_complete_connections(
+            symbol_list,
+            graph,
+            depth=2,
+            rank_keep_pct=rank_keep_pct,
+            return_ranked=True,
+        )
+
+        ranked_file_names = set()
+        for node in ranked_nodes:
+            if "." in node:
+                ranked_file_names.add(node.split(".")[0] + ".py")
+
+        important_files = [
+            path
+            for f in arch_files
+            if f in ranked_file_names and f in name_to_path
+            for path in name_to_path[f]
+        ]
+
+        json_output = {
+            "symbol_map": symbol_map,
+            "important_files": important_files,
+        }
         result = json.dumps(json_output)
         return [types.TextContent(type="text", text=result)]
 
