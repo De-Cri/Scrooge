@@ -10,7 +10,7 @@ from indexer.symbol_extractor import symbol_extractor
 from parser.ast_parser import parse_file
 from scanner.scanner import scan_repo
 
-app = Server("repograph")
+app = Server("Scrooge")
 #This is the coding agent's interface
 @app.list_tools()
 async def list_tools():
