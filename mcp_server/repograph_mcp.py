@@ -192,6 +192,11 @@ async def call_tool(name: str, arguments: dict):
         ordered_connections.sort(key=lambda c: (c.get("depth", 0), c.get("from", ""), c.get("to", "")))
 
         all_nodes = sorted({n for item in ordered_connections for n in (item.get("from"), item.get("to")) if n})
+
+        # Cross-filter: keep only files that have at least one node in the call_graph
+        graph_modules = {node.split(".")[0] + ".py" for node in all_nodes if "." in node}
+        important_files = [f for f in important_files if Path(f).name in graph_modules]
+
         json_output = {
             "important_files": important_files,
             "call_graph": {
