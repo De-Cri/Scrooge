@@ -44,7 +44,7 @@ async def list_tools():
         ),
         types.Tool(
             name="architecture",
-            description="given a file-path and a query, scans the entire folder and returns the most important file paths filtered by connection rank, plus a call graph showing the flow of the relevant functions",
+            description="given a file-path and a query, scans the entire folder and returns candidate files with their connections (calls/called_by) and a scoped call graph. IMPORTANT: do NOT open all candidates — study the 'calls' and 'called_by' fields to understand how files relate to each other, then select only the most relevant ones to inspect based on the connections.",
             inputSchema={
                 "type":"object",
                 "properties": {
@@ -151,7 +151,7 @@ async def call_tool(name: str, arguments: dict):
         # BFS runs on the full ranked graph (rank_keep_pct=1.0) so start_nodes are
         # always reachable — mirrors the CLI connections flow that produced the benchmark results.
         # rank_keep_pct from the caller is applied AFTER to filter important_files only.
-        rank_keep_pct = arguments.get("rank_keep_pct", 0.4)
+        rank_keep_pct = arguments.get("rank_keep_pct", 0.3)
         connections_list, ranked_nodes = generate_complete_connections(
             symbol_list,
             graph,
@@ -197,11 +197,38 @@ async def call_tool(name: str, arguments: dict):
         graph_modules = {node.split(".")[0] + ".py" for node in all_nodes if "." in node}
         important_files = [f for f in important_files if Path(f).name in graph_modules]
 
+        # Scope call_graph to only candidate file modules
+        candidate_stems = {Path(f).stem for f in important_files}
+        scoped_connections = [
+            item for item in ordered_connections
+            if item.get("from", "").split(".")[0] in candidate_stems
+            and item.get("to", "").split(".")[0] in candidate_stems
+        ]
+        scoped_nodes = sorted({n for item in scoped_connections for n in (item.get("from"), item.get("to")) if n})
+
+        # Build per-file connection summary for agent file picking
+        file_summaries = []
+        for f in important_files:
+            prefix = Path(f).stem + "."
+            calls_out = set()
+            called_by = set()
+            for edge in scoped_connections:
+                frm, to = edge.get("from", ""), edge.get("to", "")
+                if frm.startswith(prefix) and not to.startswith(prefix):
+                    calls_out.add(to)
+                if to.startswith(prefix) and not frm.startswith(prefix):
+                    called_by.add(frm)
+            file_summaries.append({
+                "file": f,
+                "calls": sorted(calls_out),
+                "called_by": sorted(called_by),
+            })
+
         json_output = {
-            "important_files": important_files,
+            "candidates": file_summaries,
             "call_graph": {
-                "nodes": all_nodes,
-                "edges": [{"from": item.get("from"), "to": item.get("to"), "depth": item.get("depth", 0)} for item in ordered_connections],
+                "nodes": scoped_nodes,
+                "edges": [{"from": item.get("from"), "to": item.get("to"), "depth": item.get("depth", 0)} for item in scoped_connections],
             },
         }
         result = json.dumps(json_output)
