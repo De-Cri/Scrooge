@@ -2,15 +2,20 @@ import networkx as nx
 
 
 def rank_graph_nodes(graph, start_nodes, max_nodes=40):
+    internal_nodes = graph.graph.get("internal_nodes", set(graph.nodes()))
+    working_graph = graph.subgraph(internal_nodes)
+
     distances = {}
 
     for start in start_nodes:
-        lengths = nx.single_source_shortest_path_length(graph, start, cutoff=4)
+        if start not in working_graph:
+            continue
+        lengths = nx.single_source_shortest_path_length(working_graph, start, cutoff=4)
         for node, d in lengths.items():
             distances[node] = min(distances.get(node, 999), d)
 
-    pagerank = nx.pagerank(graph, alpha=0.85)
-    degree = dict(graph.degree())
+    pagerank = nx.pagerank(working_graph, alpha=0.85)
+    degree = dict(working_graph.degree())
     scores = []
 
     for node in distances:

@@ -7,7 +7,7 @@ def generate_complete_connections(
     symbol_list: list,
     graph: nx.DiGraph,
     depth: int,
-    max_nodes: int = 40,
+    max_nodes: int = None,
     rank_keep_pct: float = 1.0,
     return_ranked: bool = False,
 ):
@@ -21,6 +21,10 @@ def generate_complete_connections(
 
     ranked_graph = graph
     ranked_nodes = []
+
+    if max_nodes is None:
+        graph_size = len(graph.nodes())
+        max_nodes = max(40, min(200, graph_size // 10))
 
     if start_nodes:
         existing_starts = [node for node in start_nodes if node in graph]
@@ -64,12 +68,13 @@ def generate_complete_connections(
                     next_frontier.add(target)
 
                 for source, _ in ranked_graph.in_edges(node):
-                    connections_list.append({
-                        "from": source,
-                        "to": node,
-                        "type": "calls",
-                        "depth": current_depth + 1
-                    })
+                    if source not in visited:
+                        connections_list.append({
+                            "from": source,
+                            "to": node,
+                            "type": "calls",
+                            "depth": current_depth + 1
+                        })
                     next_frontier.add(source)
 
             frontier = next_frontier
