@@ -55,6 +55,22 @@ Instead of keyword-matching filenames, Scrooge builds a **structural graph of th
 
 Given a query, Scrooge ranks nodes by relevance and returns only the **key entry points** — the 2–3 files that actually contain the answer. The AI reads those, not everything.
 
+### Smart query flow
+
+Scrooge matches queries by **substring against code identifiers** (function names, class names, file names). To get the best results, the AI agent doesn't pass the user's raw question — it first **extracts keywords** that are likely to match symbol names in the codebase:
+
+```
+User: "how does the authentication flow work?"
+         ↓
+   LLM extracts keywords
+         ↓
+Scrooge query: "auth login authenticate user"
+         ↓
+   Matches: auth.py → authenticate(), login_user()
+```
+
+This keyword extraction step is built into the MCP tool descriptions, so AI agents like Claude Code automatically distill natural-language questions into symbol-oriented search terms before calling Scrooge.
+
 At scale, across hundreds of agent runs, this saves **millions of tokens**.
 
 ---
@@ -98,23 +114,135 @@ Scrooge returns: `auth.py` with `login`, `authenticate`, `get_user` — not ever
 
 ## Installation
 
+### Prerequisites
+
+- **Python 3.11+** — check with `python --version`
+- **Git** — to clone the repository
+
+### Step 1 — Clone the repository
+
 ```bash
-git clone https://github.com/yourname/repograph
-cd repograph
-python -m venv .venv
-source .venv/bin/activate
-pip install typer networkx
+git clone https://github.com/SamueleCor662/Scrooge.git
+cd Scrooge
 ```
+
+### Step 2 — Create a virtual environment
+
+It's recommended to use a virtual environment to avoid conflicts with other Python packages.
+
+**macOS / Linux:**
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+**Windows (PowerShell):**
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+**Windows (cmd):**
+```cmd
+python -m venv .venv
+.venv\Scripts\activate.bat
+```
+
+### Step 3 — Install Scrooge
+
+```bash
+pip install -e .
+```
+
+This installs Scrooge and all its core dependencies (`mcp`, `networkx`).
+
+To also install the CLI tool:
+```bash
+pip install -e ".[cli]"
+```
+
+That's it! Scrooge is now installed and ready to use.
+
+---
+
+## Setup as MCP Server (Claude Code)
+
+Scrooge exposes its graph as an **MCP tool**, so AI agents like Claude Code can query it natively — calling `architecture`, `connections`, and `index` instead of reading entire files.
+
+### Step 1 — Locate the Scrooge directory
+
+You need the **full absolute path** to the folder where you cloned Scrooge. For example:
+- macOS/Linux: `/home/yourname/Scrooge`
+- Windows: `C:/Users/yourname/Desktop/Scrooge`
+
+### Step 2 — Add Scrooge to Claude Code settings
+
+Open (or create) your Claude Code settings file:
+
+| OS | Path |
+|---|---|
+| macOS / Linux | `~/.claude/settings.json` |
+| Windows | `%USERPROFILE%\.claude\settings.json` |
+
+Add the `Scrooge` MCP server inside the `mcpServers` block:
+
+```json
+{
+  "mcpServers": {
+    "Scrooge": {
+      "command": "SCROOGE_PATH/.venv/Scripts/python.exe",
+      "args": ["-m", "mcp_server.repograph_mcp"],
+      "cwd": "SCROOGE_PATH"
+    }
+  }
+}
+```
+
+Replace `SCROOGE_PATH` with the absolute path to your Scrooge folder.
+
+**Examples:**
+
+macOS / Linux:
+```json
+{
+  "mcpServers": {
+    "Scrooge": {
+      "command": "/home/yourname/Scrooge/.venv/bin/python",
+      "args": ["-m", "mcp_server.repograph_mcp"],
+      "cwd": "/home/yourname/Scrooge"
+    }
+  }
+}
+```
+
+Windows:
+```json
+{
+  "mcpServers": {
+    "Scrooge": {
+      "command": "C:/Users/yourname/Desktop/Scrooge/.venv/Scripts/python.exe",
+      "args": ["-m", "mcp_server.repograph_mcp"],
+      "cwd": "C:/Users/yourname/Desktop/Scrooge"
+    }
+  }
+}
+```
+
+### Step 3 — Restart Claude Code
+
+After saving `settings.json`, **restart Claude Code** completely. The Scrooge tools (`architecture`, `connections`, `index`) will now appear automatically and Claude will use them when exploring codebases.
+
+### Verify it works
+
+In Claude Code, ask something like:
+
+> *"Use the architecture tool to find the main entry points of this repo"*
+
+If Scrooge is configured correctly, Claude will call the MCP tool instead of reading files manually.
 
 ---
 
 ## CLI Usage
-
-Index a repository:
-
-```bash
-python cli.py index path/to/repository
-```
 
 ### `architecture`
 
@@ -171,26 +299,6 @@ python cli/repograph_cli.py connections path/to/repo login 2 --compact
     ["auth.login_user", "models.AuthService.issue_token", 1]
   ]
 }
-```
-
----
-
-## MCP Server
-
-Scrooge exposes its graph as an **MCP tool**, so AI agents can query it natively.
-
-Add it to your Claude Code config and agents will automatically call `repograph.connections` or `repograph.architecture` instead of reading entire files.
-
-```json
-{
-  "mcpServers": {
-    "repograph": {
-      "command": "python",
-      "args": ["server/api.py", "--repo", "path/to/repo"]
-    }
-  }
-}
-```
 
 ---
 
@@ -210,7 +318,7 @@ repo
 ## Project Structure
 
 ```
-repograph/
+Scrooge/
 │
 ├── scanner/
 │   └── scanner.py               # find all source files in the repo
