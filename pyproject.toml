@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scrooge"
+version = "0.1.0"
+description = "Scrooge – MCP server that builds call-graphs and architecture maps for coding agents"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.11"
+dependencies = [
+    "mcp>=1.26",
+    "networkx>=3.2",
+]
+
+[project.optional-dependencies]
+cli = ["typer>=0.12"]
+benchmark = ["google-genai", "matplotlib", "numpy"]
+dev = ["scrooge[cli,benchmark]"]
+
+[project.scripts]
+scrooge = "cli.repograph_cli:app"
+
+[tool.setuptools.packages.find]
+include = [
+    "graph_builder*",
+    "indexer*",
+    "intelligence*",
+    "mcp_server*",
+    "output*",
+    "parser*",
+    "scanner*",
+    "cli*",
+]
+exclude = [
+    "example_repo*",
+    "benchmarks*",
+    ".venv*",
+]

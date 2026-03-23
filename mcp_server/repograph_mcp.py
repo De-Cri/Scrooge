@@ -44,7 +44,7 @@ async def list_tools():
         ),
         types.Tool(
             name="architecture",
-            description="given a file-path and a query, scans the entire folder and returns candidate files with their connections (calls/called_by) and a scoped call graph. The result is also saved to '.scrooge_architecture.json' in the repo root — re-read that file whenever you need to recall how modules are connected instead of calling this tool again. IMPORTANT: do NOT open all candidates — study the 'calls' and 'called_by' fields to understand how files relate to each other, then select only the most relevant ones to inspect based on the connections.",
+            description="given a file-path and a keyword query, scans the entire folder and returns candidate files with their connections (calls/called_by) and a scoped call graph. The result is also saved to '.scrooge_architecture.json' in the repo root — re-read that file whenever you need to recall how modules are connected instead of calling this tool again. IMPORTANT: do NOT open all candidates — study the 'calls' and 'called_by' fields to understand how files relate to each other, then select only the most relevant ones to inspect based on the connections. QUERY INSTRUCTIONS: Do NOT pass the user's raw question. Instead, extract keywords that match likely symbol names (function names, class names, method names, file names) in the codebase. Scrooge matches by substring against identifiers — so use short, specific terms like 'auth login user' instead of 'how does the authentication flow work'. Think about what the relevant code symbols might be named and use those words.",
             inputSchema={
                 "type":"object",
                 "properties": {
@@ -54,7 +54,7 @@ async def list_tools():
                     },
                     "query":{
                         "type":"string",
-                        "description":"represents the query given from the user"
+                        "description":"space-separated keywords extracted from the user's question. Each keyword should be a likely substring of function names, class names, method names, or file names in the codebase. Do NOT pass the raw user question — distill it into symbol-oriented search terms."
                     },
                     "rank_keep_pct":{
                         "type":"number",
@@ -66,7 +66,7 @@ async def list_tools():
         ),
         types.Tool(
             name="connections",
-            description="given a repo path and a query, returns the call graph connections between the symbols relevant to the query, with optional depth control and compact output",
+            description="given a repo path and a keyword query, returns the call graph connections between the symbols relevant to the query, with optional depth control and compact output. QUERY INSTRUCTIONS: Do NOT pass the user's raw question. Instead, extract keywords that match likely symbol names (function names, class names, method names, file names). Scrooge matches by substring against identifiers — use short, specific terms.",
             inputSchema={
                 "type":"object",
                 "properties": {
@@ -76,7 +76,7 @@ async def list_tools():
                     },
                     "query":{
                         "type":"string",
-                        "description":"represents the query given from the user"
+                        "description":"space-separated keywords extracted from the user's question. Each keyword should be a likely substring of function names, class names, method names, or file names. Do NOT pass the raw user question — distill it into symbol-oriented search terms."
                     },
                     "depth":{
                         "type":"integer",
