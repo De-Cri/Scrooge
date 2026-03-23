@@ -44,7 +44,7 @@ async def list_tools():
         ),
         types.Tool(
             name="architecture",
-            description="given a file-path and a query, scans the entire folder and returns candidate files with their connections (calls/called_by) and a scoped call graph. IMPORTANT: do NOT open all candidates — study the 'calls' and 'called_by' fields to understand how files relate to each other, then select only the most relevant ones to inspect based on the connections.",
+            description="given a file-path and a query, scans the entire folder and returns candidate files with their connections (calls/called_by) and a scoped call graph. The result is also saved to '.scrooge_architecture.json' in the repo root — re-read that file whenever you need to recall how modules are connected instead of calling this tool again. IMPORTANT: do NOT open all candidates — study the 'calls' and 'called_by' fields to understand how files relate to each other, then select only the most relevant ones to inspect based on the connections.",
             inputSchema={
                 "type":"object",
                 "properties": {
@@ -231,8 +231,12 @@ async def call_tool(name: str, arguments: dict):
                 "edges": [{"from": item.get("from"), "to": item.get("to"), "depth": item.get("depth", 0)} for item in scoped_connections],
             },
         }
-        result = json.dumps(json_output)
-        return [types.TextContent(type="text", text=result)]
+        # Write output to a file so the agent can consult it as dynamic memory
+        repo_path = Path(arguments.get("path"))
+        output_file = repo_path / ".scrooge_architecture.json"
+        output_file.write_text(json.dumps(json_output, indent=2), encoding="utf-8")
+
+        return [types.TextContent(type="text", text=f"Architecture saved to {output_file}. Read that file to see candidates and call graph.")]
 
     if name == "connections":
         files = scan_repo(arguments.get("path"))
