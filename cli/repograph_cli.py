@@ -68,7 +68,7 @@ def architecture(
         help="Percentuale (0-1) dei nodi rankati da mantenere per connections.",
     ),
     file_keep_pct: float = typer.Option(
-        None,
+        0.35,
         "--file-keep-pct",
         help="Percentuale (0-1) dei file rankati da mantenere dopo lo scoring.",
     ),
@@ -175,15 +175,20 @@ def architecture(
             "called_by": sorted(called_by),
         })
 
-    file_summaries.sort(key=lambda x: x["relevance"], reverse=True)
+    # Split: candidates with connections vs isolated files (no calls and no called_by)
+    connected = [f for f in file_summaries if f["calls"] or f["called_by"]]
+    isolated = [f["file"] for f in file_summaries if not f["calls"] and not f["called_by"]]
 
+    connected.sort(key=lambda x: x["relevance"], reverse=True)
     if isinstance(file_keep_pct, (int, float)) and 0 < file_keep_pct < 1:
-        keep_count = max(1, math.ceil(len(file_summaries) * file_keep_pct))
-        file_summaries = file_summaries[:keep_count]
+        keep_count = max(1, math.ceil(len(connected) * file_keep_pct))
+        connected = connected[:keep_count]
 
     json_output = {
-        "candidates": file_summaries,
+        "candidates": connected,
     }
+    if isolated:
+        json_output["related_files"] = isolated
     typer.echo(json.dumps(json_output, indent=2, ensure_ascii=False))
 
 

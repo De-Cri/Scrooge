@@ -1,0 +1,100 @@
+{
+  "candidates": [
+    {
+      "file": "C:\\Users\\ssamu\\OneDrive\\Desktop\\github-biran2\\brian2\\brian2\\core\\network.py",
+      "relevance": 100,
+      "calls": [
+        "network.Network._nextclocks",
+        "network.Network.after_run",
+        "network.Network.before_run",
+        "network.Network.check_dependencies",
+        "network._check_multiple_summed_updaters",
+        "network._get_all_objects",
+        "network.profiling_summary"
+      ],
+      "called_by": [
+        "magic.MagicNetwork.run",
+        "network.Network.before_run",
+        "network.Network.check_dependencies",
+        "network.Network.run"
+      ]
+    },
+    {
+      "file": "C:\\Users\\ssamu\\OneDrive\\Desktop\\github-biran2\\brian2\\brian2\\devices\\device.py",
+      "relevance": 97,
+      "calls": [
+        "device.CPPStandaloneDevice._prepare_timed_array_run_arg",
+        "device.CPPStandaloneDevice._prepare_variableview_run_arg",
+        "device.CPPStandaloneDevice.build",
+        "device.CPPStandaloneDevice.check_openmp_compatible",
+        "device.CPPStandaloneDevice.code_object_class",
+        "device.CPPStandaloneDevice.compile_source",
+        "device.CPPStandaloneDevice.copy_source_files",
+        "device.CPPStandaloneDevice.generate_codeobj_source",
+        "device.CPPStandaloneDevice.generate_main_source",
+        "device.CPPStandaloneDevice.generate_makefile",
+        "device.CPPStandaloneDevice.generate_network_source",
+        "device.CPPStandaloneDevice.generate_objects_source",
+        "device.CPPStandaloneDevice.generate_run_source",
+        "device.CPPStandaloneDevice.generate_synapses_classes_source",
+        "device.CPPStandaloneDevice.insert_code",
+        "device.CPPStandaloneDevice.run",
+        "device.CPPStandaloneDevice.write_static_arrays"
+      ],
+      "called_by": [
+        "device.CPPStandaloneDevice._insert_func_namespace",
+        "device.CPPStandaloneDevice.apply_run_args",
+        "device.CPPStandaloneDevice.build",
+        "device.CPPStandaloneDevice.generate_main_source",
+        "device.CPPStandaloneDevice.generate_makefile",
+        "device.CPPStandaloneDevice.generate_network_source",
+        "device.CPPStandaloneDevice.generate_objects_source",
+        "device.CPPStandaloneDevice.generate_run_source",
+        "device.CPPStandaloneDevice.generate_synapses_classes_source",
+        "device.CPPStandaloneDevice.network_run",
+        "device.CPPStandaloneDevice.run"
+      ]
+    },
+    {
+      "file": "C:\\Users\\ssamu\\OneDrive\\Desktop\\github-biran2\\brian2\\brian2\\devices\\cpp_standalone\\device.py",
+      "relevance": 97,
+      "calls": [
+        "device.CPPStandaloneDevice._prepare_timed_array_run_arg",
+        "device.CPPStandaloneDevice._prepare_variableview_run_arg",
+        "device.CPPStandaloneDevice.build",
+        "device.CPPStandaloneDevice.check_openmp_compatible",
+        "device.CPPStandaloneDevice.code_object_class",
+        "device.CPPStandaloneDevice.compile_source",
+        "device.CPPStandaloneDevice.copy_source_files",
+        "device.CPPStandaloneDevice.generate_codeobj_source",
+        "device.CPPStandaloneDevice.generate_main_source",
+        "device.CPPStandaloneDevice.generate_makefile",
+        "device.CPPStandaloneDevice.generate_network_source",
+        "device.CPPStandaloneDevice.generate_objects_source",
+        "device.CPPStandaloneDevice.generate_run_source",
+        "device.CPPStandaloneDevice.generate_synapses_classes_source",
+        "device.CPPStandaloneDevice.insert_code",
+        "device.CPPStandaloneDevice.run",
+        "device.CPPStandaloneDevice.write_static_arrays"
+      ],
+      "called_by": [
+        "device.CPPStandaloneDevice._insert_func_namespace",
+        "device.CPPStandaloneDevice.apply_run_args",
+        "device.CPPStandaloneDevice.build",
+        "device.CPPStandaloneDevice.generate_main_source",
+        "device.CPPStandaloneDevice.generate_makefile",
+        "device.CPPStandaloneDevice.generate_network_source",
+        "device.CPPStandaloneDevice.generate_objects_source",
+        "device.CPPStandaloneDevice.generate_run_source",
+        "device.CPPStandaloneDevice.generate_synapses_classes_source",
+        "device.CPPStandaloneDevice.network_run",
+        "device.CPPStandaloneDevice.run"
+      ]
+    }
+  ],
+  "related_files": [
+    "C:\\Users\\ssamu\\OneDrive\\Desktop\\github-biran2\\brian2\\brian2\\groups\\neurongroup.py",
+    "C:\\Users\\ssamu\\OneDrive\\Desktop\\github-biran2\\brian2\\brian2\\input\\poissongroup.py",
+    "C:\\Users\\ssamu\\OneDrive\\Desktop\\github-biran2\\brian2\\brian2\\synapses\\synapses.py"
+  ]
+}

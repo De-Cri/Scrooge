@@ -44,7 +44,7 @@ async def list_tools():
         ),
         types.Tool(
             name="architecture",
-            description="given a file-path and a keyword query, scans the entire folder and returns candidate files with their connections (calls/called_by) and a scoped call graph. The result is also saved to '.scrooge_architecture.json' in the repo root — re-read that file whenever you need to recall how modules are connected instead of calling this tool again. IMPORTANT: do NOT open all candidates — study the 'calls' and 'called_by' fields to understand how files relate to each other, then select only the most relevant ones to inspect based on the connections. QUERY INSTRUCTIONS: Do NOT pass the user's raw question. Instead, extract keywords that match likely symbol names (function names, class names, method names, file names) in the codebase. Scrooge matches by substring against identifiers — so use short, specific terms like 'auth login user' instead of 'how does the authentication flow work'. Think about what the relevant code symbols might be named and use those words.",
+            description="given a file-path and a keyword query, scans the entire folder and returns candidate files with their connections (calls/called_by) and a scoped call graph. The result is also saved to '.scrooge_architecture.json' in the repo root — re-read that file whenever you need to recall how modules are connected instead of calling this tool again. IMPORTANT: do NOT open all candidates — study the 'calls' and 'called_by' fields to understand how files relate to each other, then select only the most relevant ones to inspect based on the connections. QUERY INSTRUCTIONS: Do NOT pass the user's raw question. Instead, extract keywords that match likely symbol names (function names, class names, method names, file names) in the codebase. Scrooge matches by substring against identifiers — so use short, specific terms like 'auth login user' instead of 'how does the authentication flow work'. Think about what the relevant code symbols might be named and use those words. IMPORTANT: Before passing the query, REMOVE all generic programming words that would cause false positives. Drop any of these from the query: function, method, class, module, file, variable, parameter, argument, object, instance, attribute, property, type, return, import, def, self, init, constructor, decorator, lambda, callback, handler, helper, utility, base, abstract, interface, mixin, enum, struct, schema, model, config, setup, factory, builder, manager, service, controller, provider, wrapper, middleware. Do NOT add new words — only remove superfluous ones from the user's query and keep the domain-specific terms.",
             inputSchema={
                 "type":"object",
                 "properties": {
@@ -54,7 +54,7 @@ async def list_tools():
                     },
                     "query":{
                         "type":"string",
-                        "description":"space-separated keywords extracted from the user's question. Each keyword should be a likely substring of function names, class names, method names, or file names in the codebase. Do NOT pass the raw user question — distill it into symbol-oriented search terms."
+                        "description":"space-separated keywords extracted from the user's question. Remove generic programming words (function, method, class, module, variable, handler, etc.) before passing — only keep domain-specific terms."
                     },
                     "rank_keep_pct":{
                         "type":"number",
@@ -70,7 +70,7 @@ async def list_tools():
         ),
         types.Tool(
             name="connections",
-            description="given a repo path and a keyword query, returns the call graph connections between the symbols relevant to the query, with optional depth control and compact output. QUERY INSTRUCTIONS: Do NOT pass the user's raw question. Instead, extract keywords that match likely symbol names (function names, class names, method names, file names). Scrooge matches by substring against identifiers — use short, specific terms.",
+            description="given a repo path and a keyword query, returns the call graph connections between the symbols relevant to the query, with optional depth control and compact output. QUERY INSTRUCTIONS: Do NOT pass the user's raw question. Instead, extract keywords that match likely symbol names (function names, class names, method names, file names). Scrooge matches by substring against identifiers — use short, specific terms. IMPORTANT: Before passing the query, REMOVE all generic programming words that would cause false positives. Drop any of these from the query: function, method, class, module, file, variable, parameter, argument, object, instance, attribute, property, type, return, import, def, self, init, constructor, decorator, lambda, callback, handler, helper, utility, base, abstract, interface, mixin, enum, struct, schema, model, config, setup, factory, builder, manager, service, controller, provider, wrapper, middleware. Do NOT add new words — only remove superfluous ones and keep domain-specific terms.",
             inputSchema={
                 "type":"object",
                 "properties": {
@@ -80,7 +80,7 @@ async def list_tools():
                     },
                     "query":{
                         "type":"string",
-                        "description":"space-separated keywords extracted from the user's question. Each keyword should be a likely substring of function names, class names, method names, or file names. Do NOT pass the raw user question — distill it into symbol-oriented search terms."
+                        "description":"space-separated keywords extracted from the user's question. Remove generic programming words (function, method, class, module, variable, handler, etc.) before passing — only keep domain-specific terms."
                     },
                     "depth":{
                         "type":"integer",
@@ -241,15 +241,21 @@ async def call_tool(name: str, arguments: dict):
                 "called_by": sorted(called_by),
             })
 
-        file_summaries.sort(key=lambda x: x["relevance"], reverse=True)
+        # Split: candidates with connections vs isolated files (no calls and no called_by)
+        connected = [f for f in file_summaries if f["calls"] or f["called_by"]]
+        isolated = [f["file"] for f in file_summaries if not f["calls"] and not f["called_by"]]
+
+        connected.sort(key=lambda x: x["relevance"], reverse=True)
         file_keep_pct = arguments.get("file_keep_pct", 0.35)
         if isinstance(file_keep_pct, (int, float)) and 0 < file_keep_pct < 1:
-            keep_count = max(1, math.ceil(len(file_summaries) * file_keep_pct))
-            file_summaries = file_summaries[:keep_count]
+            keep_count = max(1, math.ceil(len(connected) * file_keep_pct))
+            connected = connected[:keep_count]
 
         json_output = {
-            "candidates": file_summaries,
+            "candidates": connected,
         }
+        if isolated:
+            json_output["related_files"] = isolated
         # Write output to a file so the agent can consult it as dynamic memory
         repo_path = Path(arguments.get("path"))
         output_file = repo_path / ".scrooge_architecture.json"
