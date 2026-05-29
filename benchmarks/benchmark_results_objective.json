@@ -1,0 +1,342 @@
+[
+  {
+    "case": 1,
+    "description": "Scrooge: graph builder module",
+    "repo": "Scrooge",
+    "query": "call graph build",
+    "expected": [
+      "call_graph.py"
+    ],
+    "candidates": [
+      "call_graph.py",
+      "ast_parser.py"
+    ],
+    "hit_at_1": true,
+    "hit_at_3": true,
+    "hit_at_all": true,
+    "precision": 0.5,
+    "candidate_count": 2,
+    "grep_count": 11,
+    "reduction_ratio": 5.5,
+    "elapsed_s": 0.62
+  },
+  {
+    "case": 2,
+    "description": "Scrooge: symbol extractor module",
+    "repo": "Scrooge",
+    "query": "symbol extract tokenize",
+    "expected": [
+      "symbol_extractor.py"
+    ],
+    "candidates": [
+      "symbol_extractor.py",
+      "ast_parser.py"
+    ],
+    "hit_at_1": true,
+    "hit_at_3": true,
+    "hit_at_all": true,
+    "precision": 0.5,
+    "candidate_count": 2,
+    "grep_count": 6,
+    "reduction_ratio": 3.0,
+    "elapsed_s": 0.02
+  },
+  {
+    "case": 3,
+    "description": "Scrooge: ranking/intelligence module",
+    "repo": "Scrooge",
+    "query": "rank pagerank",
+    "expected": [
+      "rank_graph_connections.py"
+    ],
+    "candidates": [
+      "rank_graph_connections.py"
+    ],
+    "hit_at_1": true,
+    "hit_at_3": true,
+    "hit_at_all": true,
+    "precision": 1.0,
+    "candidate_count": 1,
+    "grep_count": 5,
+    "reduction_ratio": 5.0,
+    "elapsed_s": 0.03
+  },
+  {
+    "case": 4,
+    "description": "Scrooge: AST parser module",
+    "repo": "Scrooge",
+    "query": "parse ast import",
+    "expected": [
+      "ast_parser.py"
+    ],
+    "candidates": [
+      "ast_parser.py"
+    ],
+    "hit_at_1": true,
+    "hit_at_3": true,
+    "hit_at_all": true,
+    "precision": 1.0,
+    "candidate_count": 1,
+    "grep_count": 16,
+    "reduction_ratio": 16.0,
+    "elapsed_s": 0.02
+  },
+  {
+    "case": 5,
+    "description": "Scrooge: scanner module",
+    "repo": "Scrooge",
+    "query": "scan repo",
+    "expected": [
+      "scanner.py"
+    ],
+    "candidates": [
+      "scanner.py"
+    ],
+    "hit_at_1": true,
+    "hit_at_3": true,
+    "hit_at_all": true,
+    "precision": 1.0,
+    "candidate_count": 1,
+    "grep_count": 7,
+    "reduction_ratio": 7.0,
+    "elapsed_s": 0.03
+  },
+  {
+    "case": 6,
+    "description": "Scrooge: connection traversal",
+    "repo": "Scrooge",
+    "query": "connections depth bfs",
+    "expected": [
+      "symbols_connections.py"
+    ],
+    "candidates": [
+      "rank_graph_connections.py",
+      "symbols_connections.py"
+    ],
+    "hit_at_1": false,
+    "hit_at_3": true,
+    "hit_at_all": true,
+    "precision": 0.5,
+    "candidate_count": 2,
+    "grep_count": 3,
+    "reduction_ratio": 1.5,
+    "elapsed_s": 0.02
+  },
+  {
+    "case": 7,
+    "description": "brian2tools: morphology plotting",
+    "repo": "brian2tools",
+    "query": "morphology plot",
+    "expected": [
+      "morphology.py"
+    ],
+    "candidates": [
+      "morphology.py",
+      "nml.py"
+    ],
+    "hit_at_1": true,
+    "hit_at_3": true,
+    "hit_at_all": true,
+    "precision": 0.5,
+    "candidate_count": 2,
+    "grep_count": 14,
+    "reduction_ratio": 7.0,
+    "elapsed_s": 0.07
+  },
+  {
+    "case": 8,
+    "description": "brian2tools: synapse plotting",
+    "repo": "brian2tools",
+    "query": "synapse plot",
+    "expected": [
+      "synapses.py"
+    ],
+    "candidates": [
+      "morphology.py",
+      "synapses.py"
+    ],
+    "hit_at_1": false,
+    "hit_at_3": true,
+    "hit_at_all": true,
+    "precision": 0.5,
+    "candidate_count": 2,
+    "grep_count": 16,
+    "reduction_ratio": 8.0,
+    "elapsed_s": 0.05
+  },
+  {
+    "case": 9,
+    "description": "brian2tools: LEMS/NML export",
+    "repo": "brian2tools",
+    "query": "lems export nml",
+    "expected": [
+      "lemsexport.py"
+    ],
+    "candidates": [
+      "lemsexport.py"
+    ],
+    "hit_at_1": true,
+    "hit_at_3": true,
+    "hit_at_all": true,
+    "precision": 1.0,
+    "candidate_count": 1,
+    "grep_count": 15,
+    "reduction_ratio": 15.0,
+    "elapsed_s": 0.06
+  },
+  {
+    "case": 10,
+    "description": "brian2tools: base export collector",
+    "repo": "brian2tools",
+    "query": "collector device export",
+    "expected": [
+      "collector.py"
+    ],
+    "candidates": [
+      "lemsexport.py",
+      "collector.py"
+    ],
+    "hit_at_1": false,
+    "hit_at_3": true,
+    "hit_at_all": true,
+    "precision": 0.5,
+    "candidate_count": 2,
+    "grep_count": 12,
+    "reduction_ratio": 6.0,
+    "elapsed_s": 0.06
+  },
+  {
+    "case": 11,
+    "description": "brian2tools: markdown exporter",
+    "repo": "brian2tools",
+    "query": "md export expander",
+    "expected": [
+      "expander.py",
+      "mdexporter.py"
+    ],
+    "candidates": [
+      "expander.py"
+    ],
+    "hit_at_1": true,
+    "hit_at_3": true,
+    "hit_at_all": true,
+    "precision": 1.0,
+    "candidate_count": 1,
+    "grep_count": 12,
+    "reduction_ratio": 12.0,
+    "elapsed_s": 0.05
+  },
+  {
+    "case": 12,
+    "description": "brian2: NeuronGroup class",
+    "repo": "brian2",
+    "query": "neuron group equations",
+    "expected": [
+      "neurongroup.py"
+    ],
+    "candidates": [
+      "spatialneuron.py",
+      "equations.py",
+      "group.py",
+      "neurongroup.py"
+    ],
+    "hit_at_1": false,
+    "hit_at_3": false,
+    "hit_at_all": true,
+    "precision": 0.25,
+    "candidate_count": 4,
+    "grep_count": 61,
+    "reduction_ratio": 15.2,
+    "elapsed_s": 0.64
+  },
+  {
+    "case": 13,
+    "description": "brian2: Synapses connection",
+    "repo": "brian2",
+    "query": "synapse connect",
+    "expected": [
+      "synapses.py"
+    ],
+    "candidates": [
+      "synapses.py",
+      "device.py",
+      "device.py"
+    ],
+    "hit_at_1": true,
+    "hit_at_3": true,
+    "hit_at_all": true,
+    "precision": 0.5,
+    "candidate_count": 3,
+    "grep_count": 35,
+    "reduction_ratio": 11.7,
+    "elapsed_s": 0.54
+  },
+  {
+    "case": 14,
+    "description": "brian2: Network run loop",
+    "repo": "brian2",
+    "query": "network run simulation",
+    "expected": [
+      "network.py"
+    ],
+    "candidates": [
+      "network.py",
+      "device.py",
+      "device.py",
+      "magic.py",
+      "operations.py"
+    ],
+    "hit_at_1": true,
+    "hit_at_3": true,
+    "hit_at_all": true,
+    "precision": 0.25,
+    "candidate_count": 5,
+    "grep_count": 72,
+    "reduction_ratio": 14.4,
+    "elapsed_s": 0.88
+  },
+  {
+    "case": 15,
+    "description": "brian2: code generation translation",
+    "repo": "brian2",
+    "query": "codegen translation generate",
+    "expected": [
+      "translation.py"
+    ],
+    "candidates": [
+      "translation.py",
+      "GSL_generator.py",
+      "generate_reference.py"
+    ],
+    "hit_at_1": true,
+    "hit_at_3": true,
+    "hit_at_all": true,
+    "precision": 0.333,
+    "candidate_count": 3,
+    "grep_count": 64,
+    "reduction_ratio": 21.3,
+    "elapsed_s": 1.07
+  },
+  {
+    "case": 16,
+    "description": "brian2: preferences system",
+    "repo": "brian2",
+    "query": "preferences prefs store",
+    "expected": [
+      "preferences.py"
+    ],
+    "candidates": [
+      "preferences.py",
+      "cpp_prefs.py",
+      "spikequeue.py"
+    ],
+    "hit_at_1": true,
+    "hit_at_3": true,
+    "hit_at_all": true,
+    "precision": 0.333,
+    "candidate_count": 3,
+    "grep_count": 60,
+    "reduction_ratio": 20.0,
+    "elapsed_s": 1.07
+  }
+]

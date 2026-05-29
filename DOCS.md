@@ -278,7 +278,6 @@ Scrooge/
 ├── mcp_server/
 │   └── scrooge_mcp.py           # MCP server (scrooge-mcp command)
 ├── example_repo/                # small test repo for manual testing
-├── benchmarks/                  # Gemini agent benchmark suite
 ├── pyproject.toml               # package metadata + entry points
 └── README.md                    # installation + quick start
 ```
@@ -332,16 +331,6 @@ You can adjust these weights or add new signals (e.g., file size, recency of cha
 
 ---
 
-## Benchmarks
-
-The `benchmarks/` directory contains a full benchmark suite that compares Scrooge against a classic keyword-search agent using Google Gemini.
-
-See [benchmarks/README.md](benchmarks/README.md) for details on running benchmarks.
-
-**Requirements:** `pip install -e ".[benchmark]"` and a `GEMINI_API_KEY` environment variable.
-
----
-
 ## Dependencies
 
 | Package | Version | Purpose |
@@ -349,5 +338,3 @@ See [benchmarks/README.md](benchmarks/README.md) for details on running benchmar
 | `networkx` | >=3.2 | Graph data structure, PageRank, BFS |
 | `mcp` | >=1.26 | Model Context Protocol server |
 | `typer` | >=0.12 | CLI framework |
-
-**Optional (benchmarks):** `google-genai`, `matplotlib`, `numpy`

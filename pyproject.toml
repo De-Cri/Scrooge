@@ -15,10 +15,6 @@ dependencies = [
     "typer>=0.12",
 ]
 
-[project.optional-dependencies]
-benchmark = ["google-genai", "matplotlib", "numpy"]
-dev = ["scrooge[benchmark]"]
-
 [project.scripts]
 scrooge = "cli.scrooge_cli:app"
 scrooge-mcp = "mcp_server.scrooge_mcp:main_sync"
@@ -36,6 +32,5 @@ include = [
 ]
 exclude = [
     "example_repo*",
-    "benchmarks*",
     ".venv*",
 ]

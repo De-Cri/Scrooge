@@ -128,7 +128,7 @@ def parse_file(file_path):
         with open(file_path, "r", encoding="utf-8", errors="replace") as f:
             source = f.read()
         tree = ast.parse(source)
-    except (SyntaxError, UnicodeDecodeError):
+    except (SyntaxError, UnicodeDecodeError, ValueError):
         return {"files": {Path(file_path).name: {"classes": {}, "functions": {}}}}
     path_obj = Path(file_path)
     module_name = path_obj.stem
@@ -153,12 +153,13 @@ def parse_file(file_path):
     for node in tree.body:
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
             parsed_file["functions"][node.name] = {
+                "line": node.lineno,
                 "calls": _extract_calls(
                     node,
                     module_name,
                     import_map,
                     local_functions,
-                )
+                ),
             }
 
         elif isinstance(node, ast.ClassDef):
@@ -168,6 +169,7 @@ def parse_file(file_path):
             for item in node.body:
                 if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
                     methods[item.name] = {
+                        "line": item.lineno,
                         "calls": _extract_calls(
                             item,
                             module_name,
@@ -175,9 +177,12 @@ def parse_file(file_path):
                             local_functions,
                             class_name=node.name,
                             class_methods=class_methods,
-                        )
+                        ),
                     }
 
-            parsed_file["classes"][node.name] = {"methods": methods}
+            parsed_file["classes"][node.name] = {
+                "line": node.lineno,
+                "methods": methods,
+            }
 
     return {"files": {file_name: parsed_file}}

@@ -34,7 +34,11 @@ def build_graph(parsed_data):
 
         for function_name, function_data in file_data.get("functions", {}).items():
             source = f"{module_name}.{function_name}"
-            graph.add_node(source)
+            graph.add_node(
+                source,
+                file=file_name,
+                line=function_data.get("line"),
+            )
             internal_nodes.add(source)
             for call in function_data.get("calls", []):
                 pending_edges.append((source, call))
@@ -43,7 +47,11 @@ def build_graph(parsed_data):
             methods = class_data.get("methods", {})
             for method_name, method_data in methods.items():
                 source = f"{module_name}.{class_name}.{method_name}"
-                graph.add_node(source)
+                graph.add_node(
+                    source,
+                    file=file_name,
+                    line=method_data.get("line"),
+                )
                 internal_nodes.add(source)
                 for call in method_data.get("calls", []):
                     pending_edges.append((source, call))

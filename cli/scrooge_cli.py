@@ -92,6 +92,25 @@ def architecture(
     matched_nodes = sorted(set(_symbol_map_to_nodes(symbol_map)))
     symbol_list = [{"name": node, "type": "function"} for node in matched_nodes]
 
+    # Map: file basename -> [{"symbol": "Class.method", "line": N}, ...]
+    matched_nodes_by_file = {}
+    for node in matched_nodes:
+        if node not in graph:
+            continue
+        attrs = graph.nodes[node]
+        file_name = attrs.get("file")
+        line = attrs.get("line")
+        if not file_name:
+            continue
+        parts = node.split(".", 1)
+        symbol_label = parts[1] if len(parts) > 1 else node
+        matched_nodes_by_file.setdefault(file_name, []).append({
+            "symbol": symbol_label,
+            "line": line,
+        })
+    for entries in matched_nodes_by_file.values():
+        entries.sort(key=lambda e: (e.get("line") or 0, e.get("symbol") or ""))
+
     # BFS runs on the full ranked graph (rank_keep_pct=1.0) so start_nodes are reachable
     connections_list, ranked_nodes, node_scores = generate_complete_connections(
         symbol_list,
@@ -130,11 +149,8 @@ def architecture(
         ordered_connections.append(item)
     ordered_connections.sort(key=lambda c: (c.get("depth", 0), c.get("from", ""), c.get("to", "")))
 
-    all_nodes = sorted({n for item in ordered_connections for n in (item.get("from"), item.get("to")) if n})
-
-    # Cross-filter: keep only files that have at least one node in the call_graph
-    graph_modules = {node.split(".")[0] + ".py" for node in all_nodes if "." in node}
-    important_files = [f for f in important_files if Path(f).name in graph_modules]
+    # Do NOT cross-filter by graph_modules — that drops terminal modules that matched
+    # the query but have no connections to other matched files.  Ranking handles this.
 
     # Scope call_graph to only candidate file modules
     candidate_stems = {Path(f).stem for f in important_files}
@@ -144,40 +160,51 @@ def architecture(
         and item.get("to", "").split(".")[0] in candidate_stems
     ]
 
-    # Compute per-file relevance score (max node score per file, normalized 0-100)
+    # Compute per-file relevance score:
+    # 70% graph score (max node score for this file) + 30% token coverage bonus.
+    token_coverage = {f: symbol_map.get(Path(f).name, {}).get("_token_coverage", 0.0) for f in important_files}
     file_scores = {}
     for f in important_files:
         prefix = Path(f).stem + "."
-        max_score = max(
+        max_graph_score = max(
             (node_scores.get(n, 0) for n in node_scores if n.startswith(prefix)),
             default=0,
         )
-        file_scores[f] = max_score
+        file_scores[f] = max_graph_score * 0.7 + token_coverage.get(f, 0.0) * 0.3
 
     top_score = max(file_scores.values(), default=1) or 1
 
-    # Build per-file connection summary for agent file picking
+    # Build per-file connection summary. `matches` lists the matched symbols
+    # in this file with their line numbers; `calls`/`called_by` are scoped to
+    # those matched symbols only, not every symbol in the file.
     file_summaries = []
     for f in important_files:
-        prefix = Path(f).stem + "."
+        file_basename = Path(f).name
+        matches = matched_nodes_by_file.get(file_basename, [])
+        stem = Path(f).stem
+        file_matched_nodes = {f"{stem}.{m['symbol']}" for m in matches}
+
         calls_out = set()
         called_by = set()
         for edge in scoped_connections:
             frm, to = edge.get("from", ""), edge.get("to", "")
-            if frm.startswith(prefix):
+            if frm in file_matched_nodes:
                 calls_out.add(to)
-            if to.startswith(prefix):
+            if to in file_matched_nodes:
                 called_by.add(frm)
+
         file_summaries.append({
             "file": f,
             "relevance": round(file_scores[f] / top_score * 100),
+            "matches": matches,
             "calls": sorted(calls_out),
             "called_by": sorted(called_by),
         })
 
-    # Split: candidates with connections vs isolated files (no calls and no called_by)
-    connected = [f for f in file_summaries if f["calls"] or f["called_by"]]
-    isolated = [f["file"] for f in file_summaries if not f["calls"] and not f["called_by"]]
+    # Keep files that have at least one matched symbol.
+    # Files with no internal connections are still returned — they may be
+    # leaf modules that are exactly what the query targets.
+    connected = [f for f in file_summaries if f["matches"]]
 
     connected.sort(key=lambda x: x["relevance"], reverse=True)
     if isinstance(file_keep_pct, (int, float)) and 0 < file_keep_pct < 1:
@@ -187,8 +214,6 @@ def architecture(
     json_output = {
         "candidates": connected,
     }
-    if isolated:
-        json_output["related_files"] = isolated
     typer.echo(json.dumps(json_output, indent=2, ensure_ascii=False))
 
 
