@@ -1,0 +1,80 @@
+[
+  {
+    "repo": "brian2",
+    "n_cases": 13,
+    "graph_nodes": 2670,
+    "cochange_pairs": 32659,
+    "results": {
+      "structural": {
+        "recall@1": 0.077,
+        "recall@3": 0.103,
+        "recall@5": 0.128,
+        "mrr": 0.118
+      },
+      "cochange": {
+        "recall@1": 0.128,
+        "recall@3": 0.256,
+        "recall@5": 0.333,
+        "mrr": 0.283
+      },
+      "combined": {
+        "recall@1": 0.205,
+        "recall@3": 0.256,
+        "recall@5": 0.256,
+        "mrr": 0.319
+      }
+    }
+  },
+  {
+    "repo": "brian2tools",
+    "n_cases": 25,
+    "graph_nodes": 515,
+    "cochange_pairs": 125,
+    "results": {
+      "structural": {
+        "recall@1": 0.18,
+        "recall@3": 0.24,
+        "recall@5": 0.24,
+        "mrr": 0.28
+      },
+      "cochange": {
+        "recall@1": 0.373,
+        "recall@3": 0.633,
+        "recall@5": 0.88,
+        "mrr": 0.697
+      },
+      "combined": {
+        "recall@1": 0.433,
+        "recall@3": 0.707,
+        "recall@5": 0.9,
+        "mrr": 0.74
+      }
+    }
+  },
+  {
+    "repo": "Scrooge",
+    "n_cases": 12,
+    "graph_nodes": 279,
+    "cochange_pairs": 114,
+    "results": {
+      "structural": {
+        "recall@1": 0.106,
+        "recall@3": 0.106,
+        "recall@5": 0.122,
+        "mrr": 0.417
+      },
+      "cochange": {
+        "recall@1": 0.0,
+        "recall@3": 0.044,
+        "recall@5": 0.089,
+        "mrr": 0.104
+      },
+      "combined": {
+        "recall@1": 0.033,
+        "recall@3": 0.122,
+        "recall@5": 0.167,
+        "mrr": 0.312
+      }
+    }
+  }
+]

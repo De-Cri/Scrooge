@@ -13,6 +13,7 @@ from pathlib import Path
 from indexer.symbol_extractor import symbol_extractor
 from parser.ast_parser import parse_file
 from scanner.scanner import scan_repo
+from cochange.cochange_analyzer import build_cochange_graph
 
 _NON_ARCH_PATTERNS = re.compile(
     r"([\\/]tests?[\\/]"
@@ -351,12 +352,38 @@ async def call_tool(name: str, arguments: dict):
 
         _progress(f"Ranking done: {len(connected)} candidate files kept after filtering")
 
+        # --- Co-change analysis -------------------------------------------------
+        # Mine git history to find files that are BEHAVIORALLY coupled to the
+        # candidates — i.e., historically edited in the same commits even without
+        # a direct call/import relationship.  These are the files an agent must
+        # also inspect (and likely edit) to avoid incomplete changes.
+        repo_path = Path(arguments.get("path"))
+        cochange_graph = await loop.run_in_executor(
+            None, build_cochange_graph, str(repo_path)
+        )
+        _progress(f"Co-change graph built from {cochange_graph.total_commits} commits")
+
+        candidate_basenames = [Path(c["file"]).name for c in connected]
+        cochange_alerts = cochange_graph.all_partners_for_files(candidate_basenames, top_k=5)
+
+        # Annotate each candidate with its own co-change partners too
+        for c in connected:
+            partners = cochange_graph.partners(Path(c["file"]).name, top_k=3)
+            # Exclude partners that are already candidates
+            c["cochange"] = [
+                p for p in partners
+                if Path(p["file"]).name not in {Path(x["file"]).name for x in connected}
+            ]
+
         json_output = {
             "candidates": connected,
+            "cochange_alerts": cochange_alerts,
+            # What the agent should know before editing:
+            # cochange_alerts = files not in candidates but historically edited
+            # together with candidates. High cochange_rate = nearly always touched.
         }
 
-        # Save to scanned repo root (legacy)
-        repo_path = Path(arguments.get("path"))
+        # Save to scanned repo root
         output_file = repo_path / ".scrooge_architecture.json"
         output_file.write_text(json.dumps(json_output, indent=2), encoding="utf-8")
 
