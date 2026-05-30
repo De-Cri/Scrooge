@@ -1,0 +1,136 @@
+{
+  "tasks": [
+    {
+      "task": 1,
+      "msg": "Minor refactoring for more readable code",
+      "trigger": "variables.py",
+      "targets": [
+        "group.py"
+      ],
+      "aider_recall": 1.0,
+      "scrooge_recall": 0.0,
+      "aider_tokens": 1710,
+      "scrooge_tokens": 137
+    },
+    {
+      "task": 2,
+      "msg": "Linked variables with string indices",
+      "trigger": "group.py",
+      "targets": [
+        "neurongroup.py",
+        "synapses.py",
+        "homeostatic_stdp_at_inhibitory_synapes.py"
+      ],
+      "aider_recall": 0.33,
+      "scrooge_recall": 0.67,
+      "aider_tokens": 1486,
+      "scrooge_tokens": 157
+    },
+    {
+      "task": 3,
+      "msg": "Simplify release script by passing version as argument",
+      "trigger": "create_codemeta.py",
+      "targets": [
+        "release.py"
+      ],
+      "aider_recall": 0.0,
+      "scrooge_recall": 1.0,
+      "aider_tokens": 1608,
+      "scrooge_tokens": 164
+    },
+    {
+      "task": 4,
+      "msg": "Remove deprecated ast use",
+      "trigger": "functions.py",
+      "targets": [
+        "rendering.py"
+      ],
+      "aider_recall": 1.0,
+      "scrooge_recall": 0.0,
+      "aider_tokens": 1684,
+      "scrooge_tokens": 146
+    },
+    {
+      "task": 5,
+      "msg": "Reuse previous rk_double and rk_gauss implementations",
+      "trigger": "codeobject.py",
+      "targets": [
+        "device.py"
+      ],
+      "aider_recall": 1.0,
+      "scrooge_recall": 1.0,
+      "aider_tokens": 1527,
+      "scrooge_tokens": 144
+    },
+    {
+      "task": 6,
+      "msg": "Make random number generation thread-safe",
+      "trigger": "codeobject.py",
+      "targets": [
+        "device.py"
+      ],
+      "aider_recall": 1.0,
+      "scrooge_recall": 1.0,
+      "aider_tokens": 1610,
+      "scrooge_tokens": 150
+    },
+    {
+      "task": 7,
+      "msg": "Replace randomkit by standard library implementation",
+      "trigger": "codeobject.py",
+      "targets": [
+        "device.py"
+      ],
+      "aider_recall": 1.0,
+      "scrooge_recall": 0.0,
+      "aider_tokens": 1628,
+      "scrooge_tokens": 156
+    },
+    {
+      "task": 8,
+      "msg": "Update imports for Python >=3.10",
+      "trigger": "functions.py",
+      "targets": [
+        "fundamentalunits.py"
+      ],
+      "aider_recall": 1.0,
+      "scrooge_recall": 1.0,
+      "aider_tokens": 1428,
+      "scrooge_tokens": 143
+    }
+  ],
+  "timings": [
+    {
+      "aider_time": 1.37,
+      "scrooge_time": 0.81
+    },
+    {
+      "aider_time": 1.24,
+      "scrooge_time": 0.66
+    },
+    {
+      "aider_time": 1.26,
+      "scrooge_time": 0.63
+    },
+    {
+      "aider_time": 1.29,
+      "scrooge_time": 0.65
+    },
+    {
+      "aider_time": 1.26,
+      "scrooge_time": 0.64
+    },
+    {
+      "aider_time": 1.28,
+      "scrooge_time": 0.64
+    },
+    {
+      "aider_time": 1.21,
+      "scrooge_time": 0.64
+    },
+    {
+      "aider_time": 1.29,
+      "scrooge_time": 0.78
+    }
+  ]
+}
